@@ -91,9 +91,9 @@
           ></v-select>
 
           <v-btn
-            class="me-4 w-100"
+            class="me-4 w-100 mt-10 text-white"
             type="submit"
-            color="green-lighten-1"
+            color="#01cda9"
             size="large"
             :loading="state.loading"
           >
@@ -101,8 +101,8 @@
           </v-btn>
 
           <v-btn
-            class="w-100 mt-6"
-            color="blue-darken-1"
+            class="w-100 mt-6 text-white"
+            color="#35374f"
             size="large"
             :to="{ name: 'login' }"
           >

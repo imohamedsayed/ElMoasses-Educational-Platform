@@ -3,6 +3,9 @@ import LandingPage from "../views/LandingPage.vue";
 import Signup from "../views/auth/Signup.vue";
 import Login from "../views/auth/Login.vue";
 import Home from "../views/website/Home.vue";
+import Month from "../views/website/month/Month.vue";
+import Lecture from "../views/website/Lecture.vue";
+import Profile from "../views/website/Profile.vue";
 const routes = [
   {
     path: "/",
@@ -29,11 +32,35 @@ const routes = [
     },
   },
   {
-    path: "/lectures",
-    name: "lectures",
+    path: "/home",
+    name: "home",
     component: Home,
     meta: {
-      title: "المحاضرات",
+      title: "السنوات الدراسية",
+    },
+  },
+  {
+    path: "/month/:id",
+    name: "month",
+    component: Month,
+    meta: {
+      title: "محتوى الشهر",
+    },
+  },
+  {
+    path: "/month/:m/lecture/:id",
+    name: "lecture",
+    component: Lecture,
+    meta: {
+      title: "المحاضرة",
+    },
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: Profile,
+    meta: {
+      title: "حسابي",
     },
   },
 ];

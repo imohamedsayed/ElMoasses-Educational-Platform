@@ -1,6 +1,9 @@
 <template>
   <v-footer class="d-flex flex-column" style="margin-top: 40px" :app="true">
-    <div class="bg-green-lighten-1 d-flex w-100 align-center px-4">
+    <div
+      class="d-flex w-100 align-center px-4"
+      style="background: var(--caribian-green); color: var(--seashell)"
+    >
       <strong>تواصل معنا عبر مواقع التواصل الاجتماعي!</strong>
 
       <v-spacer></v-spacer>

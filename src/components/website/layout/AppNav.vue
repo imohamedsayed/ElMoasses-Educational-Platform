@@ -4,20 +4,24 @@
     <v-app-bar-title
       ><v-img src="@/assets/images/logo.png" width="60"></v-img
     ></v-app-bar-title>
-    <v-btn class="d-none d-md-flex" :to="{ name: 'landing' }">
+    <v-btn class="d-none d-md-flex" :to="{ name: 'landing' }" color="teal">
       الرئيسية
       <template v-slot:prepend>
         <v-icon>mdi-home</v-icon>
       </template>
     </v-btn>
-    <v-btn class="d-none d-md-flex mr-2" :to="{ name: 'lectures' }">
+    <v-btn class="d-none d-md-flex mr-2" :to="{ name: 'home' }" color="teal">
       المحاضرات
       <template v-slot:prepend>
         <v-icon>mdi-monitor</v-icon>
       </template>
     </v-btn>
     <v-spacer></v-spacer>
-    <v-btn class="ml-2 account-btn d-none d-md-flex">
+    <v-btn
+      class="ml-2 account-btn d-none d-md-flex"
+      :to="{ name: 'profile' }"
+      color="teal"
+    >
       حسابي
       <template v-slot:prepend>
         <v-avatar
@@ -29,9 +33,9 @@
       </template>
     </v-btn>
     <v-btn
-      color="green-lighten-1"
+      color="#01cda9"
       variant="flat"
-      class="ml-2 d-none d-md-block"
+      class="ml-2 d-none d-md-block text-white"
       :to="{ name: 'login' }"
     >
       تسجيل الدخول
@@ -90,16 +94,16 @@ export default {
 
 <style lang="scss">
 #appBar {
-  border-bottom: 1px solid #43a047;
+  border-bottom: 1px solid #01cda9;
   button {
     &:hover {
-      color: #43a047;
+      color: #01cda9;
     }
   }
 
   .account-btn:hover {
     #accountAvatar {
-      background-color: #43a047 !important;
+      background-color: #01cda9 !important;
     }
   }
 }

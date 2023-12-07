@@ -2,7 +2,8 @@
   <section class="first-year">
     <v-container>
       <h2>
-        أحدث شهور <span class="text-green-lighten-1">الصف الثالث الثانوي</span>
+        أحدث شهور
+        <span style="color: var(--caribian-green)">الصف الثالث الثانوي</span>
       </h2>
       <v-divider width="500" class="mt-2"></v-divider>
 
@@ -31,17 +32,24 @@
               <div>مادة الاستاتيكا</div>
 
               <div
-                class="w-25 mt-5 bg-green-lighten-4 pa-2 text-center"
-                style="border-radius: 20px"
+                class="w-25 mt-5 pa-2 text-center"
+                style="
+                  border-radius: 20px;
+                  background: var(--seashell);
+                  color: var(--black-color);
+                  opacity: 0.6;
+                "
               >
                 150 جنيه
               </div>
             </v-card-text>
 
             <v-card-actions>
-              <v-btn color="green-darken-1" variant="flat"> الاشتراك</v-btn>
+              <v-btn color="#01cda9" class="text-white" variant="flat">
+                الاشتراك</v-btn
+              >
 
-              <v-btn color="green-darken-1"> مشاهدة المحتوي </v-btn>
+              <v-btn color="#01cda9"> مشاهدة المحتوي </v-btn>
             </v-card-actions>
           </v-card>
         </v-col>

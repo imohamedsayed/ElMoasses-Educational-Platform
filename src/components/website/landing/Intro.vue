@@ -38,8 +38,11 @@
           >
         </v-col>
         <v-col col="12" md="6" class="text-center">
-          <video height="360" controls autoplay v-motion-slide-left>
-            <source src="../../../assets/video/intro.mp4" type="video/mp4" />
+          <video height="360" autoplay controls v-motion-slide-left>
+            <source
+              :src="require('../../../assets/video/intro.mp4')"
+              type="video/mp4"
+            />
           </video>
         </v-col>
       </v-row>
@@ -47,9 +50,7 @@
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss">
 .intro {
