@@ -15,8 +15,8 @@
             variant="outlined"
             color="green-lighten-1"
             v-model="state.name"
-            class="mb-4"
             :error-messages="v$.name.$error ? v$.name.$errors[0].$message : ''"
+            class="mb-4"
           ></v-text-field>
           <v-text-field
             label="البريد الالكتروني"

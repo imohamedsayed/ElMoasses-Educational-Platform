@@ -58,19 +58,28 @@
           prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
           link
           class="mb-2"
+          :to="{ name: 'profile' }"
         ></v-list-item>
         <v-list-item
           title="الرئيسية"
           prepend-icon="mdi-home"
           link
+          :to="{ name: 'landing' }"
         ></v-list-item>
 
         <v-list-item
           title="المحاضرات"
           prepend-icon="mdi-monitor"
           link
+          :to="{ name: 'home' }"
         ></v-list-item>
-
+        <v-list-item
+          title="الاعدادات"
+          prepend-icon="mdi-cog-outline"
+          link
+          :to="{ name: 'settings' }"
+        ></v-list-item>
+        <v-divider></v-divider>
         <v-list-item
           title="تسجيل خروج"
           prepend-icon="mdi-logout"

@@ -10,10 +10,9 @@
       </v-col>
     </v-row>
     <v-row v-else>
-      <v-col col="12" md="4" lg="3" v-for="i in 8" :key="i">
+      <v-col cols="12" md="4" lg="3" v-for="i in 8" :key="i">
         <v-skeleton-loader
           class="mx-auto border"
-          max-width="300"
           type="image, article"
         ></v-skeleton-loader>
       </v-col>

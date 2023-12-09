@@ -15,7 +15,7 @@
         <v-btn
           variant="text"
           icon="mdi-chevron-left"
-          @click.self.stop="AppRail = !AppRail"
+          @click.stop="AppRail = !AppRail"
         ></v-btn>
       </template>
     </v-list-item>
@@ -24,47 +24,40 @@
 
     <v-list density="compact" nav>
       <v-list-item
+        prepend-icon="mdi-home"
+        title="الرئيسية"
+        value="home"
+        color="green-lighten-1"
+        :to="{ name: 'dashHome' }"
+      ></v-list-item>
+      <v-list-item
         prepend-icon="mdi-account"
         title="حسابي"
         value="account"
-        :to="{ name: 'profile' }"
         color="green-lighten-1"
-      ></v-list-item>
-      <v-list-item
-        prepend-icon="mdi-home-city"
-        title="الرئيسية"
-        value="home"
-        :to="{ name: 'landing' }"
-        color="green-lighten-1"
-      ></v-list-item>
-      <v-list-item
-        prepend-icon="mdi-bookshelf"
-        value="studies"
-        title="الصفوف الدراسية"
-        :to="{ name: 'home' }"
-        color="green-lighten-1"
-      ></v-list-item>
-      <v-list-item
-        prepend-icon="mdi-storefront-outline"
-        title="المتجر"
-        value="store"
-        color="green-lighten-1"
-        :to="{ name: 'store' }"
       ></v-list-item>
 
       <v-list-group>
         <template v-slot:activator="{ props }">
           <v-list-item
-            prepend-icon="mdi-login"
-            title="Forms"
-            value="form"
+            prepend-icon="mdi-calendar-text"
+            title="السنوات الدراسية"
+            value="years"
             v-bind="props"
+            link
           ></v-list-item>
         </template>
         <v-list-item
-          prepend-icon="mdi-email"
-          title="Examples"
-          value="ex1"
+          prepend-icon="mdi-calendar-plus"
+          title="اضافة سنة"
+          value="yearAdd"
+          :to="{ name: 'addYear' }"
+        ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-calendar"
+          title="السنوات الدراسية"
+          value="all years"
+          :to="{ name: 'years' }"
         ></v-list-item>
       </v-list-group>
 
@@ -89,7 +82,7 @@ export default {
   }),
   mounted() {
     this.Emitter.on(
-      "toggleAppDrawer",
+      "toggleDashDrawer",
       () => (this.AppDrawer = !this.AppDrawer)
     );
   },
