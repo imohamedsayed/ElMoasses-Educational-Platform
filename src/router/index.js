@@ -23,6 +23,16 @@ import AddMonth from "../views/admin/months/AddMonth.vue";
 import Months from "../views/admin/months/Months.vue";
 import EditMonth from "../views/admin/months/EditMonth.vue";
 import DashMonth from "../views/admin/months/month/Month.vue";
+import Lectures from "../views/admin/months/month/lecture/Lectures.vue";
+import AddLecture from "../views/admin/months/month/lecture/AddLecture.vue";
+import EditLecture from "../views/admin/months/month/lecture/EditLecture.vue";
+import DashNotes from "../views/admin/months/month/notes/Notes.vue";
+import AddNote from "../views/admin/months/month/notes/AddNote.vue";
+import EditNote from "../views/admin/months/month/notes/EditNote.vue";
+
+import Products from "../views/admin/products/Products.vue";
+import EditProduct from "../views/admin/products/EditProduct.vue";
+import AddProduct from "../views/admin/products/AddProduct.vue";
 
 const routes = [
   {
@@ -136,6 +146,8 @@ const routes = [
   {
     path: "/dashboard/years/:id/edit",
     name: "editYear",
+    props: true,
+
     component: EditYear,
     meta: {
       title: "تعديل السنة الدراسية",
@@ -144,6 +156,7 @@ const routes = [
   {
     path: "/dashboard/years/:yid/semesters",
     name: "semesters",
+    props: true,
     component: Semesters,
     meta: {
       title: "انصاف السنة الدراسية",
@@ -152,6 +165,8 @@ const routes = [
   {
     path: "/dashboard/years/:yid/semesters/:id",
     name: "editSemester",
+    props: true,
+
     component: EditSemester,
     meta: {
       title: "تعديل نصف السنة الدراسي",
@@ -161,6 +176,8 @@ const routes = [
     path: "/dashboard/years/:yid/semesters/add",
     name: "addSemester",
     component: AddSemester,
+    props: true,
+
     meta: {
       title: "اضافة نصف السنة الدراسي",
     },
@@ -169,6 +186,8 @@ const routes = [
     path: "/dashboard/years/:yid/semesters/:sid/months",
     name: "months",
     component: Months,
+    props: true,
+
     meta: {
       title: "الشهور الدراسية",
     },
@@ -177,6 +196,8 @@ const routes = [
     path: "/dashboard/years/:yid/semesters/:sid/months/add",
     name: "addMonth",
     component: AddMonth,
+    props: true,
+
     meta: {
       title: "اضافة شهر دراسي",
     },
@@ -184,6 +205,8 @@ const routes = [
   {
     path: "/dashboard/years/:yid/semesters/:sid/months/:id/edit",
     name: "editMonth",
+    props: true,
+
     component: EditMonth,
     meta: {
       title: "تعديل شهر دراسي",
@@ -192,9 +215,93 @@ const routes = [
   {
     path: "/dashboard/years/:yid/semesters/:sid/months/:id",
     name: "dashMonth",
+    props: true,
+
     component: DashMonth,
     meta: {
       title: "محتوى الشهر الدراسي",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/lectures",
+    name: "lectures",
+    component: Lectures,
+    props: true,
+
+    meta: {
+      title: "المحاضرات",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/lectures/add",
+    name: "addLecture",
+    component: AddLecture,
+    props: true,
+
+    meta: {
+      title: "اضافة محاضرة",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/lectures/:id/edit",
+    name: "editLecture",
+    props: true,
+
+    component: EditLecture,
+    meta: {
+      title: "تعديل المحاضرة",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/notes",
+    name: "monthNotes",
+    component: DashNotes,
+    props: true,
+    meta: {
+      title: "المذكرات",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/notes/add",
+    name: "addMonthNote",
+    component: AddNote,
+    props: true,
+    meta: {
+      title: "اضافة مذكرة",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/notes/:id/edit",
+    name: "editMonthNote",
+    component: EditNote,
+    props: true,
+    meta: {
+      title: "تعديل مذكرة",
+    },
+  },
+  {
+    path: "/dashboard/store",
+    name: "dashStore",
+    component: Products,
+    meta: {
+      title: "المتجر",
+    },
+  },
+  {
+    path: "/dashboard/store/add",
+    name: "addProduct",
+    component: AddProduct,
+    meta: {
+      title: "اضافة مذكرة للبيع",
+    },
+  },
+  {
+    path: "/dashboard/store/:id/edit",
+    name: "editProduct",
+    component: EditProduct,
+    props: true,
+    meta: {
+      title: "تعديل المنتج",
     },
   },
 ];

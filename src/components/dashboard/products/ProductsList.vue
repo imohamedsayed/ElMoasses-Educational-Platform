@@ -8,16 +8,13 @@
           prepend-inner-icon="mdi-magnify"
           single-line
           variant="outlined"
-          hint="مثال: الترم الاول"
+          hint="مثال: ملزمة الهندسة"
         ></v-text-field>
       </template>
       <div class="text-end mb-3">
-        <v-btn
-          color="blue-grey-lighten-1"
-          :to="{ name: 'addMonth', params: { yid: yid, sid: sid } }"
-        >
-          <v-icon class="ml-2">mdi-plus-circle</v-icon>
-          اضافة شهر جديد</v-btn
+        <v-btn color="blue-grey-lighten-1" :to="{ name: 'addProduct' }">
+          <v-icon class="ml-2">mdi-file-plus</v-icon>
+          اضافة منتج جديد</v-btn
         >
       </div>
       <v-data-table
@@ -38,19 +35,6 @@
         </template>
         <template v-slot:item.actions="{ item }">
           <div class="text-end">
-            <v-btn
-              color="teal-darken-1"
-              class="ml-4 mb-2"
-              size="small"
-              :to="{
-                name: 'dashMonth',
-                params: { yid: yid, sid: sid, id: item.id },
-              }"
-              ><v-icon>mdi-eye</v-icon>
-              <v-tooltip activator="parent" location="top"
-                >عرض المحتوى</v-tooltip
-              >
-            </v-btn>
             <v-btn color="red" class="ml-4 mb-2" size="small"
               ><v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="top">حذف</v-tooltip>
@@ -60,8 +44,8 @@
               class="ml-4"
               size="small"
               :to="{
-                name: 'editMonth',
-                params: { yid: yid, sid: sid, id: item.id },
+                name: 'editProduct',
+                params: { id: item.id },
               }"
               ><v-icon>mdi-pencil</v-icon>
               <v-tooltip activator="parent" location="top">تعديل </v-tooltip>
@@ -75,7 +59,6 @@
 
 <script>
 export default {
-  props: ["yid", "sid"],
   data: () => ({
     years: [],
     search: "",
@@ -84,9 +67,11 @@ export default {
         key: "id",
         title: "ID",
       },
-      { key: "month", title: "شهر " },
-      { key: "price", title: "السعر" },
       { key: "image", title: "صورة" },
+      { key: "name", title: "شهر " },
+      { key: "description", title: "السعر" },
+      { key: "year", title: "السعر" },
+      { key: "price", title: "السعر" },
       { key: "status", title: "الحالة" },
       { key: "actions", title: "" },
     ],
@@ -95,7 +80,9 @@ export default {
     this.years = [
       {
         id: 1,
-        month: "مارس",
+        name: "هندسة ",
+        description: "تمارين وشرع الهندسة الفراغيى ",
+        year: "اولي ثانوي ",
         price: 100,
         image: "3.png",
         status: false,

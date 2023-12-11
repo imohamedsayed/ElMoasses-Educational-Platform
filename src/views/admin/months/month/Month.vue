@@ -24,7 +24,16 @@
 
       <v-card class="pa-4 mt-15">
         <v-row>
-          <v-col cols="12" md="4">
+          <v-col
+            cols="12"
+            md="4"
+            @click="
+              $router.push({
+                name: 'lectures',
+                params: { yid: yid, sid: sid, mid: id },
+              })
+            "
+          >
             <v-card
               class="mx-auto"
               height="200"
@@ -43,6 +52,12 @@
               :image="require('../../../../assets/images/notes.svg')"
               theme="light"
               style="cursor: pointer"
+              @click="
+                $router.push({
+                  name: 'monthNotes',
+                  params: { yid: yid, sid: sid, mid: id },
+                })
+              "
             >
               <v-card-title style="font-weight: bold">المذكرات</v-card-title>
             </v-card>
@@ -68,6 +83,7 @@
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
 export default {
+  props: ["yid", "sid", "id"],
   components: { DashLayout },
 };
 </script>

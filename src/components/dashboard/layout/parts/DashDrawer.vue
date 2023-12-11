@@ -52,15 +52,44 @@
           title="اضافة سنة"
           value="yearAdd"
           :to="{ name: 'addYear' }"
+          class="insider-list"
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-calendar"
           title="السنوات الدراسية"
           value="all years"
           :to="{ name: 'years' }"
+          class="insider-list"
         ></v-list-item>
       </v-list-group>
 
+      <v-list-group>
+        <template v-slot:activator="{ props }">
+          <v-list-item
+            prepend-icon="mdi-store"
+            title="المتجر"
+            value="store"
+            v-bind="props"
+            link
+          ></v-list-item>
+        </template>
+
+        <v-list-item
+          prepend-icon="mdi-shopping-outline"
+          title="المنتجات"
+          value="all products"
+          :to="{ name: 'dashStore' }"
+          class="insider-list"
+        ></v-list-item>
+
+        <v-list-item
+          prepend-icon="mdi-store-plus"
+          title="اضافة منتج"
+          value="add Product"
+          :to="{ name: 'addProduct' }"
+          class="insider-list"
+        ></v-list-item>
+      </v-list-group>
       <v-divider></v-divider>
 
       <v-list-item
