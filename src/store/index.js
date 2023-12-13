@@ -86,12 +86,34 @@ const actions = {
         axios.defaults.headers.common["Authorization"] = "Bearer " + token;
         context.commit("setToken", token);
         context.commit("setStudent", student);
+      } else {
+        throw new Error(res.response.data.message);
       }
     } catch (error) {
-      throw error.response.data.error;
+      if (error.response) throw new Error(error.response.data.error);
+      else throw new Error(error.message);
     }
   },
-  logout(context) {
+  async studentUpdate(context, data) {
+    try {
+      const res = await axios.post("students/" + data.id, data);
+
+      if (res.status === 200) {
+        console.log(res);
+      } else {
+        throw new Error(res.response.data.message);
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+  async logout(context) {
+    try {
+      let res = await axios.post("logout");
+      context.commit("logout");
+    } catch (error) {}
+  },
+  removeStudent(context) {
     context.commit("logout");
   },
 };

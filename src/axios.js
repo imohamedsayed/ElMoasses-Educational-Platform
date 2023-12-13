@@ -1,6 +1,8 @@
 import axios from "axios";
 import store from "./store/index";
 
+import { useRouter } from "vue-router";
+
 const token = store.state.token;
 
 axios.defaults.baseURL = "http://localhost:8000/api/";
@@ -12,7 +14,8 @@ axios.interceptors.response.use(
   async (error) => {
     if (error.response.status === 401 && !x && token) {
       x = true;
-      store.dispatch("logout");
+      await store.dispatch("logout");
+      router.push({ name: "home" });
     }
     return error;
   }

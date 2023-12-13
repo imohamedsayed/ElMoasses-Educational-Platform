@@ -117,7 +117,7 @@ export default {
           });
           router.push({ name: "home" });
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }

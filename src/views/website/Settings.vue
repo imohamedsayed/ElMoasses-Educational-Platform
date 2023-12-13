@@ -21,26 +21,38 @@
             <v-row>
               <v-col cols="12" md="6" class="mb-5">
                 <v-text-field
-                  label="الاسم"
+                  label="الاسم الاول"
                   color="green-lighten-1"
                   prepend-inner-icon="mdi-account"
-                  :counter="10"
-                  v-model="state.name"
+                  v-model="state.firstName"
                   :error-messages="
-                    v$.name.$error ? v$.name.$errors[0].$message : ''
+                    v$.firstName.$error ? v$.firstName.$errors[0].$message : ''
                   "
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="6" class="mb-5">
                 <v-text-field
-                  type="email"
-                  label="البريد الاكتروني"
+                  label="الاسم الاخير"
                   color="green-lighten-1"
-                  prepend-inner-icon="mdi-email"
-                  v-model="state.email"
-                  class="mb-4"
+                  prepend-inner-icon="mdi-account"
+                  v-model="state.lastName"
                   :error-messages="
-                    v$.email.$error ? v$.email.$errors[0].$message : ''
+                    v$.lastName.$error ? v$.lastName.$errors[0].$message : ''
+                  "
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6" class="mb-5">
+                <v-text-field
+                  label="ألرقم القومي"
+                  color="green-lighten-1"
+                  prepend-inner-icon="mdi-card-account-details-outline"
+                  v-model="state.nationalId"
+                  class="mb-4"
+                  :counter="14"
+                  :error-messages="
+                    v$.nationalId.$error
+                      ? v$.nationalId.$errors[0].$message
+                      : ''
                   "
                 ></v-text-field>
               </v-col>
@@ -134,6 +146,7 @@
                 >
                 </v-text-field>
               </v-col>
+
               <v-col cols="12" md="6">
                 <v-text-field
                   type="password"
@@ -151,17 +164,69 @@
                 >
                 </v-text-field>
               </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  type="password"
+                  v-model="state.passwordConfirmation"
+                  label="تأكيد كلمة المرور الجديدة"
+                  prepend-inner-icon="mdi-lock"
+                  color="green-lighten-1"
+                  class="mb-5"
+                  :counter="6"
+                  :error-messages="
+                    vPass$.passwordConfirmation.$error
+                      ? vPass$.passwordConfirmation.$errors[0].$message
+                      : ''
+                  "
+                >
+                </v-text-field>
+              </v-col>
             </v-row>
             <div class="text-center">
               <v-btn
                 type="submit"
                 size="large"
                 :loading="state.loading"
-                color="red"
+                color="brown-darken-1"
                 >تغيير كلمة السر</v-btn
               >
             </div>
           </form>
+
+          <v-divider class="my-10"></v-divider>
+          <h3>
+            <v-icon class="ml-2">mdi-folder-cog-outline</v-icon>
+            اخرى
+          </h3>
+
+          <div class="text-center mt-6">
+            <v-btn size="large" color="red" @click="state.dialog = true">
+              <v-icon>mdi-account-cancel</v-icon>
+              حذف الحساب
+            </v-btn>
+            <v-dialog
+              v-model="state.dialog"
+              width="500"
+              transition="dialog-top-transition"
+              persistent
+            >
+              <v-card class="pa-4">
+                <v-card-title> هل تريد فعلا حذف حسابك ؟ </v-card-title>
+                <v-card-text>
+                  بمجرد تأكيد الامر لن تسطيع التراجع عن ذلك سوف تخسر كل بياناتك
+                  واشتراكاتك ولا يمكنك استرجاعها لاحقا
+                </v-card-text>
+                <v-card-action class="mt-5 text-center">
+                  <v-btn @click="state.dialog = false" color="green-accent-1">
+                    <v-icon>mdi-close</v-icon> الغاء الامر
+                  </v-btn>
+                  <v-btn @click="deleteAccount" color="red" class="mr-5">
+                    <v-icon>mdi-check</v-icon> تأكيد الامر
+                  </v-btn>
+                </v-card-action>
+              </v-card>
+            </v-dialog>
+          </div>
         </v-card>
       </v-container>
     </div>
@@ -174,32 +239,44 @@ import { reactive, computed } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, not, sameAs } from "@vuelidate/validators";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import { onMounted } from "vue";
+import axios from "axios";
 export default {
   components: { AppLayout },
   setup() {
+    const store = useStore();
+    const router = useRouter();
+
     const state = reactive({
+      student: computed(() => store.state.student),
       levels: [
         {
-          title: "الصف الدراسي الاول",
-          value: 0,
-        },
-        {
-          title: "الصف الدراسي الثاني",
+          title: "الصف الاول الثانوى",
           value: 1,
         },
         {
-          title: "الصف الدراسي الثالث",
+          title: "الصف الثاني الثانوى",
+          value: 1,
+        },
+        {
+          title: "الصف الثالث الثانوى",
           value: 2,
         },
       ],
       level: "",
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
+      nationalId: "",
       currentPassword: "",
       newPassword: "",
+      passwordConfirmation: "",
       phone: "",
       fatherPhone: "",
       motherPhone: "",
+      dialog: false,
       loading: false,
       visible: false,
       items: [
@@ -220,10 +297,30 @@ export default {
         },
       ],
     });
+
+    onMounted(() => {
+      if (!state.student) {
+        router.push({ name: "login" });
+      }
+
+      state.firstName = state.student.firstName;
+      state.lastName = state.student.lastName;
+      state.nationalId = state.student.national_id_card;
+      state.phone = state.student.phone_name;
+      state.fatherPhone = state.student.father_phone;
+      state.motherPhone = state.student.mother_phone;
+      state.level = state.student.acedemic_year.includes("الاول")
+        ? 1
+        : state.student.acedemic_year.includes("الثالث")
+        ? 3
+        : 2;
+    });
+
     const rules = computed(() => {
       return {
-        email: { required, email },
-        name: { required, minLength: minLength(10) },
+        firstName: { required },
+        lastName: { required },
+        nationalId: { required, minLength: minLength(14) },
         phone: { required, minLength: minLength(11) },
         fatherPhone: { required, minLength: minLength(11) },
         motherPhone: { required, minLength: minLength(11) },
@@ -234,10 +331,10 @@ export default {
     const passwordRules = computed(() => {
       return {
         newPassword: { required, minLength: minLength(6) },
+        passwordConfirmation: { required, sameAs: sameAs(state.newPassword) },
         currentPassword: {
           required,
           minLength: minLength(6),
-         
         },
       };
     });
@@ -250,17 +347,24 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
+          let data = {
+            id: state.student.id,
+            f_name: state.firstName,
+            l_name: state.lastName,
+            phone_number: state.phone,
+            fatherPhone: state.fatherPhone,
+            motherPhone: state.mtherPhone,
+            national_id_card: state.nationalId,
+            acedemic_year: state.level,
+          };
+
+          await store.dispatch("studentUpdate", data);
+
+          toast.success("تم تعديل بياناتك بنجاح", {
             autoClose: 1000,
           });
-          // router.push("/home");
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }
@@ -276,17 +380,24 @@ export default {
       if (!vPass$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
-          });
-          // router.push("/home");
+          let data = {
+            current_password: state.currentPassword,
+            password: state.newPassword,
+            password_confirmation: state.passwordConfirmation,
+          };
+          console.log(data);
+          const res = await axios.post("password-student");
+
+          console.log(res);
+          if (res.status == 200) {
+            toast.success("تم تعديل كلمة السر بنجاح", {
+              autoClose: 1000,
+            });
+          } else {
+            throw new Error(res.response.data.message);
+          }
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }
@@ -297,7 +408,29 @@ export default {
       }
       state.loading = false;
     };
-    return { state, vPass$, v$, form1, passwordForm };
+
+    const deleteAccount = async () => {
+      try {
+        state.dialog = false;
+        const res = await axios.delete("students");
+
+        if (res.status == 200) {
+          toast.success("تم حذف حسابك بنجاح", { autoClose: 1000 });
+          setTimeout(async () => {
+            store.dispatch("removeStudent");
+          }, 1000);
+          router.push({ name: "landing" });
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        toast.error(error.message, {
+          autoClose: 1500,
+        });
+      }
+    };
+
+    return { state, vPass$, v$, form1, passwordForm, deleteAccount };
   },
 };
 </script>

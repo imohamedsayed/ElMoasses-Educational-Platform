@@ -82,10 +82,38 @@
       <v-divider></v-divider>
 
       <v-list-item
+        v-if="state.student"
+        prepend-icon="mdi-cog-outline"
+        title="الاعدادات"
+        value="settings"
+        color="green-lighten-1"
+        :to="{ name: 'settings' }"
+      ></v-list-item>
+
+      <v-list-item
+        v-if="state.student"
         prepend-icon="mdi-logout"
         title="تسجيل الخروج"
         value="logout"
         color="green-lighten-1"
+        @click="logout"
+      ></v-list-item>
+
+      <v-list-item
+        v-if="!state.student"
+        prepend-icon="mdi-login"
+        title="تسجيل الدخول"
+        value="login"
+        color="green-lighten-1"
+        :to="{ name: 'login' }"
+      ></v-list-item>
+      <v-list-item
+        v-if="!state.student"
+        prepend-icon="mdi-account"
+        title="انشاء حساب"
+        value="signup"
+        color="green-lighten-1"
+        :to="{ name: 'signup' }"
       ></v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -111,8 +139,9 @@ export default {
     const state = reactive({
       student: computed(() => store.state.student),
     });
-    const logout = () => {
-      store.dispatch("logout");
+    const logout = async () => {
+      await store.dispatch("logout");
+      location.reload();
     };
     return { state, logout };
   },

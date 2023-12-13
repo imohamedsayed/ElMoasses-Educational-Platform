@@ -139,8 +139,8 @@ export default {
     const state = reactive({
       student: computed(() => store.state.student),
     });
-    const logout = () => {
-      store.dispatch("logout");
+    const logout = async () => {
+      await store.dispatch("logout");
     };
     return { state, logout };
   },
