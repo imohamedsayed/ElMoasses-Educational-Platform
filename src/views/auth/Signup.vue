@@ -9,25 +9,32 @@
       >
         <v-card-title class="mb-4 text-center">انشاء حساب جديد</v-card-title>
         <form @submit.prevent="signup">
-          <v-text-field
-            :counter="10"
-            label="الاسم"
-            variant="outlined"
-            color="green-lighten-1"
-            v-model="state.name"
-            :error-messages="v$.name.$error ? v$.name.$errors[0].$message : ''"
-            class="mb-4"
-          ></v-text-field>
-          <v-text-field
-            label="البريد الالكتروني"
-            variant="outlined"
-            color="green-lighten-1"
-            v-model="state.email"
-            class="mb-4"
-            :error-messages="
-              v$.email.$error ? v$.email.$errors[0].$message : ''
-            "
-          ></v-text-field>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-text-field
+                label="الاسم الاول"
+                variant="outlined"
+                color="green-lighten-1"
+                v-model="state.firstName"
+                :error-messages="
+                  v$.firstName.$error ? v$.firstName.$errors[0].$message : ''
+                "
+                class="mb-4"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                label="الاسم الاخير"
+                variant="outlined"
+                color="green-lighten-1"
+                v-model="state.lastName"
+                :error-messages="
+                  v$.lastName.$error ? v$.lastName.$errors[0].$message : ''
+                "
+                class="mb-4"
+              ></v-text-field>
+            </v-col>
+          </v-row>
           <v-text-field
             :append-inner-icon="state.visible ? 'mdi-eye-off' : 'mdi-eye'"
             :type="state.visible ? 'text' : 'password'"
@@ -41,6 +48,23 @@
             :counter="6"
             :error-messages="
               v$.password.$error ? v$.password.$errors[0].$message : ''
+            "
+          ></v-text-field>
+          <v-text-field
+            :append-inner-icon="state.visible2 ? 'mdi-eye-off' : 'mdi-eye'"
+            :type="state.visible2 ? 'text' : 'password'"
+            placeholder="تأكيد الرقم السري"
+            prepend-inner-icon="mdi-lock-outline"
+            @click:append-inner="state.visible2 = !state.visible2"
+            variant="outlined"
+            color="green-lighten-1"
+            class="mb-4"
+            v-model="state.passwordConfirmation"
+            :counter="6"
+            :error-messages="
+              v$.passwordConfirmation.$error
+                ? v$.passwordConfirmation.$errors[0].$message
+                : ''
             "
           ></v-text-field>
 
@@ -77,7 +101,17 @@
               v$.motherPhone.$error ? v$.motherPhone.$errors[0].$message : ''
             "
           ></v-text-field>
-
+          <v-text-field
+            :counter="14"
+            label="الرقم القومي"
+            variant="outlined"
+            color="green-lighten-1"
+            v-model="state.nationalId"
+            class="mb-4"
+            :error-messages="
+              v$.nationalId.$error ? v$.nationalId.$errors[0].$message : ''
+            "
+          ></v-text-field>
           <v-select
             :items="state.levels"
             v-model="state.level"
@@ -119,20 +153,30 @@ import AppLayout from "@/components/website/AppLayout.vue";
 import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
-import { required, email, minLength } from "@vuelidate/validators";
+import { required, email, minLength, sameAs } from "@vuelidate/validators";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   components: { AppLayout },
   setup() {
+    const store = useStore();
+    const router = useRouter();
+
     const state = reactive({
+      student: computed(() => store.state.student),
       visible: false,
+      visible2: false,
       level: "",
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
+      passwordConfirmation: "",
       phone: "",
       fatherPhone: "",
       motherPhone: "",
       loading: false,
+      nationalId: "",
       levels: [
         {
           title: "الصف الدراسي الاول",
@@ -148,11 +192,20 @@ export default {
         },
       ],
     });
+
+    onMounted(() => {
+      if (state.student) {
+        router.push({ name: "home" });
+      }
+    });
+
     const rules = computed(() => {
       return {
-        email: { required, email },
+        firstName: { required },
+        lastName: { required },
+        nationalId: { required, minLength: minLength(14) },
         password: { required, minLength: minLength(6) },
-        name: { required, minLength: minLength(10) },
+        passwordConfirmation: { required, sameAs: sameAs(state.password) },
         phone: { required, minLength: minLength(11) },
         fatherPhone: { required, minLength: minLength(11) },
         motherPhone: { required, minLength: minLength(11) },
@@ -166,15 +219,23 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
+          let data = {
+            firstName: state.firstName,
+            lastName: state.lastName,
+            nationalId: state.nationalId,
+            password: state.password,
+            passwordConfirmation: state.passwordConfirmation,
+            phone: state.phone,
+            fatherPhone: state.fatherPhone,
+            motherPhone: state.motherPhone,
+            year: state.level,
+          };
+          await store.dispatch("studentRegister", data);
+
+          toast.success("تم انشاء حسابك بنجاح", {
             autoClose: 1000,
           });
-          // router.push("/home");
+          router.push({ name: "home" });
         } catch (err) {
           toast.error(err, {
             autoClose: 1000,
@@ -183,7 +244,7 @@ export default {
 
         state.loading = false;
       } else {
-        toast.error("ادخل بياناتك لتسجيل الدخول", {
+        toast.error("ادخل بياناتك  الصحيحة كاملة لانشاء حسابك", {
           autoClose: 1000,
         });
       }

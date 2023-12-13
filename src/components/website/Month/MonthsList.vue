@@ -1,7 +1,7 @@
 <template>
   <div class="month-list">
     <v-row v-if="!state.loading">
-      <v-col col="12" md="4" lg="3" v-for="i in 8" :key="i"
+      <v-col col="12" md="4" lg="4" xl="3" v-for="i in 8" :key="i"
         ><LectureCard
           :initial="{ opacity: 0, y: -200 }"
           :enter="{ opacity: 1, y: 0 }"
@@ -10,7 +10,7 @@
       </v-col>
     </v-row>
     <v-row v-else>
-      <v-col cols="12" md="4" lg="3" v-for="i in 8" :key="i">
+      <v-col cols="12" md="4" lg="4" xl="3" v-for="i in 8" :key="i">
         <v-skeleton-loader
           class="mx-auto border"
           type="image, article"

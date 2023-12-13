@@ -6,7 +6,7 @@ import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 import { MotionPlugin } from "@vueuse/motion";
 
-// import "./axios";
+import "./axios";
 
 import "vue3-toastify/dist/index.css";
 

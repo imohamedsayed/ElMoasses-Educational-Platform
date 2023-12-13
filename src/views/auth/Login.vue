@@ -10,13 +10,14 @@
         <v-card-title class="mb-4 text-center">تسجيل الدخول</v-card-title>
         <form @submit.prevent="login">
           <v-text-field
-            label="البريد الالكتروني"
+            label="رقم الهاتف"
             variant="outlined"
             color="green-lighten-1"
             class="mb-5"
-            v-model="state.email"
+            :counter="11"
+            v-model="state.phone"
             :error-messages="
-              v$.email.$error ? v$.email.$errors[0].$message : ''
+              v$.phone.$error ? v$.phone.$errors[0].$message : ''
             "
           ></v-text-field>
           <v-text-field
@@ -34,7 +35,9 @@
               v$.password.$error ? v$.password.$errors[0].$message : ''
             "
           ></v-text-field>
-
+          <v-list-item link color="blue" class="text-blue"
+            >هل نسيت كلمة السر ؟</v-list-item
+          >
           <v-btn
             class="me-4 w-100 mt-10 text-white"
             type="submit"
@@ -65,34 +68,31 @@ import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength } from "@vuelidate/validators";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   components: { AppLayout },
   setup() {
+    const store = useStore();
+    const router = useRouter();
+
     const state = reactive({
+      student: computed(() => store.state.student),
       visible: false,
-      level: "",
-      levels: [
-        {
-          title: "الصف الدراسي الاول",
-          value: 0,
-        },
-        {
-          title: "الصف الدراسي الثاني",
-          value: 1,
-        },
-        {
-          title: "الصف الدراسي الثالث",
-          value: 2,
-        },
-      ],
-      email: "",
+      phone: "",
       password: "",
       loading: false,
     });
 
+    onMounted(() => {
+      if (state.student) {
+        router.push({ name: "home" });
+      }
+    });
+
     const rules = computed(() => {
       return {
-        email: { required, email },
+        phone: { required, minLength: minLength(11) },
         password: { required, minLength: minLength(6) },
       };
     });
@@ -103,15 +103,15 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
+          let data = {
+            phone: state.phone,
+            password: state.password,
+          };
+          await store.dispatch("studentLogin", data);
+          toast.success("تم تسجيل الدخول بنجاح", {
             autoClose: 1000,
           });
-          // router.push("/home");
+          router.push({ name: "home" });
         } catch (err) {
           toast.error(err, {
             autoClose: 1000,

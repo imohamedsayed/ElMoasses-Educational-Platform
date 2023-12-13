@@ -21,18 +21,20 @@
       class="ml-2 account-btn d-none d-md-flex"
       :to="{ name: 'profile' }"
       color="teal"
+      v-if="state.student"
     >
       حسابي
       <template v-slot:prepend>
         <v-avatar
           color="grey-darken-1"
           size="30"
-          icon="mdi-account"
+          :image="require('@/assets/images/user.jpg')"
           id="accountAvatar"
         ></v-avatar>
       </template>
     </v-btn>
     <v-btn
+      v-if="!state.student"
       color="#01cda9"
       variant="flat"
       class="ml-2 d-none d-md-block text-white"
@@ -41,6 +43,7 @@
       تسجيل الدخول
     </v-btn>
     <v-btn
+      v-if="!state.student"
       color="orange-darken-1"
       variant="flat"
       class="d-none d-md-block"
@@ -48,9 +51,19 @@
     >
       حساب جديد
     </v-btn>
+    <v-btn
+      v-if="state.student"
+      color="red-darken-1"
+      variant="flat"
+      class="d-none d-md-block"
+      @click="logout"
+    >
+      تسجيل خروج
+    </v-btn>
     <v-btn icon id="barMenu" class="d-block d-md-none"
       ><v-icon>mdi-dots-vertical</v-icon>
     </v-btn>
+
     <v-menu activator="#barMenu" offset="10" class="pa-4">
       <v-list>
         <v-list-item
@@ -91,12 +104,25 @@
 </template>
 
 <script>
+import { computed, reactive } from "vue";
+import { useStore } from "vuex";
+
 export default {
   inject: ["Emitter"],
   methods: {
     openAppDrawer() {
       this.Emitter.emit("toggleAppDrawer");
     },
+  },
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      student: computed(() => store.state.student),
+    });
+    const logout = () => {
+      store.dispatch("logout");
+    };
+    return { state, logout };
   },
 };
 </script>

@@ -3,7 +3,7 @@ import store from "./store/index";
 
 const token = store.state.token;
 
-axios.defaults.baseURL = "http://localhost:8000/";
+axios.defaults.baseURL = "http://localhost:8000/api/";
 axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
 let x = false;
