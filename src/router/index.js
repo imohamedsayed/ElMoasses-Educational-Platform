@@ -8,7 +8,7 @@ import Lecture from "../views/website/Lecture.vue";
 import Profile from "../views/website/Profile.vue";
 import Settings from "../views/website/Settings.vue";
 import Store from "../views/website/Store.vue";
-
+import ResetPassword from "../views/auth/ResetPassword.vue";
 // Dashboard Routes
 
 import AdminLogin from "../views/auth/AdminLogin.vue";
@@ -57,6 +57,14 @@ const routes = [
     component: Login,
     meta: {
       title: "تسجيل دخول",
+    },
+  },
+  {
+    path: "/reset_password",
+    name: "resetPassword",
+    component: ResetPassword,
+    meta: {
+      title: "اعادة ضبط كلمة المرور",
     },
   },
   {

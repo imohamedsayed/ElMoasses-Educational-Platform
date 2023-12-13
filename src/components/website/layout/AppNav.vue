@@ -68,10 +68,11 @@
       <v-list>
         <v-list-item
           title="حسابي"
-          prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
+          :prepend-avatar="require('@/assets/images/user.jpg')"
           link
           class="mb-2"
           :to="{ name: 'profile' }"
+          v-if="state.student"
         ></v-list-item>
         <v-list-item
           title="الرئيسية"
@@ -91,12 +92,31 @@
           prepend-icon="mdi-cog-outline"
           link
           :to="{ name: 'settings' }"
+          v-if="state.student"
         ></v-list-item>
         <v-divider></v-divider>
+        <v-list-item
+          title="تسجيل دخول"
+          link
+          prepend-icon="mdi-login"
+          v-if="!state.student"
+          @click="$router.push({ name: 'login' })"
+        >
+        </v-list-item>
+        <v-list-item
+          title="انشاء حساب"
+          link
+          prepend-icon="mdi-account"
+          v-if="!state.student"
+          @click="$router.push({ name: 'signup' })"
+        >
+        </v-list-item>
         <v-list-item
           title="تسجيل خروج"
           prepend-icon="mdi-logout"
           link
+          @click="logout"
+          v-if="state.student"
         ></v-list-item>
       </v-list>
     </v-menu>

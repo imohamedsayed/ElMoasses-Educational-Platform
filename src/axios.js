@@ -10,9 +10,9 @@ let x = false;
 axios.interceptors.response.use(
   (resp) => resp,
   async (error) => {
-    if (error.response.status === 401 && !x) {
+    if (error.response.status === 401 && !x && token) {
       x = true;
-      store.dispatch("Logout");
+      store.dispatch("logout");
     }
     return error;
   }

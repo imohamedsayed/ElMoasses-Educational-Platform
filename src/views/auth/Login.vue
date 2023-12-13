@@ -35,7 +35,11 @@
               v$.password.$error ? v$.password.$errors[0].$message : ''
             "
           ></v-text-field>
-          <v-list-item link color="blue" class="text-blue"
+          <v-list-item
+            link
+            color="blue"
+            class="text-blue"
+            :to="{ name: 'resetPassword' }"
             >هل نسيت كلمة السر ؟</v-list-item
           >
           <v-btn

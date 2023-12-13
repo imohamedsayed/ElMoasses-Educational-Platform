@@ -78,16 +78,7 @@ const actions = {
   async studentLogin(context, { phone, password }) {
     try {
       const res = await axios.post("login", { phone_number: phone, password });
-      if (res.status !== 200) {
-        let errors = res.response.data;
-        if (Object.keys(errors).length > 0) {
-          let firstKey = Object.keys(errors)[0];
-          if (Array.isArray(errors[firstKey]) && errors[firstKey].length > 0) {
-            let firstErrorMessage = errors[firstKey][0];
-            throw new Error(firstErrorMessage);
-          }
-        }
-      } else {
+      if (res.status == 200) {
         const token = res.data.access_token;
         const expiresIn = res.data.expires_in;
         const student = res.data.user;
@@ -97,7 +88,7 @@ const actions = {
         context.commit("setStudent", student);
       }
     } catch (error) {
-      throw error.message;
+      throw error.response.data.error;
     }
   },
   logout(context) {
