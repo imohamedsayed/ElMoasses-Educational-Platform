@@ -216,14 +216,14 @@
                   بمجرد تأكيد الامر لن تسطيع التراجع عن ذلك سوف تخسر كل بياناتك
                   واشتراكاتك ولا يمكنك استرجاعها لاحقا
                 </v-card-text>
-                <v-card-action class="mt-5 text-center">
+                <v-card-actions class="mt-5 text-center">
                   <v-btn @click="state.dialog = false" color="green-accent-1">
                     <v-icon>mdi-close</v-icon> الغاء الامر
                   </v-btn>
                   <v-btn @click="deleteAccount" color="red" class="mr-5">
                     <v-icon>mdi-check</v-icon> تأكيد الامر
                   </v-btn>
-                </v-card-action>
+                </v-card-actions>
               </v-card>
             </v-dialog>
           </div>

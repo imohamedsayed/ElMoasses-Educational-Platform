@@ -22,7 +22,7 @@
       </div>
       <v-data-table
         :headers="headers"
-        :items="years"
+        :items="semesters"
         :search="search"
         hover
         class="table"
@@ -39,7 +39,7 @@
                 >عرض المحتوى</v-tooltip
               >
             </v-btn>
-            <v-btn color="red" class="ml-4" size="small"
+            <v-btn color="red" class="ml-4" size="small" @click="deleteSemester(item.id)"
               ><v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="top">حذف</v-tooltip>
             </v-btn>
@@ -54,35 +54,74 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-dialog
+      v-model="dialog"
+      width="500"
+      transition="dialog-top-transition"
+      persistent
+    >
+      <v-card class="pa-4">
+        <v-card-title> هل تريد فعلا حذف الترم الدراسي ؟ </v-card-title>
+        <v-card-text>
+          بمجرد تأكيد للأمر لن يمكنك التراجع عن ذلك سوف يتم حذف:
+          <v-list>
+            <v-list-item> محتوى الشهور لهذا الترم الدراسي</v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions class="mt-5 text-center">
+          <v-btn @click="dialog = false" color="green">
+            <v-icon>mdi-close</v-icon> الغاء الامر
+          </v-btn>
+          <v-btn @click="confirmDeleteSemester" color="red" class="mr-5">
+            <v-icon>mdi-check</v-icon> تأكيد الامر
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import { toast } from "vue3-toastify";
+
 export default {
-  props: ["yid"],
+  props: ["semesters"],
   data: () => ({
-    years: [],
     search: "",
+    dialog: false,
+    id: "",
     headers: [
       {
         key: "id",
         title: "ID",
       },
-      { key: "semester", title: "الصف الدراسي" },
+      { key: "name", title: "الترم الدراسي" },
       { key: "actions", title: "" },
     ],
   }),
-  async mounted() {
-    this.years = [
-      {
-        semester: "الترم الاول ",
-        id: 1,
-      },
-      {
-        semester: "الترم الثاني ",
-        id: 2,
-      },
-    ];
+
+  methods: {
+    async deleteSemester(id) {
+      this.dialog = true;
+      this.id = id;
+    },
+    async confirmDeleteSemester() {
+      try {
+        const res = await axios.delete("api_dashboard/semesters/" + this.id);
+        if (res.status == 200) {
+          toast.success("تم حذف الترم الدراسي بنجاح", { autoClose: 1000 });
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    },
   },
 };
 </script>

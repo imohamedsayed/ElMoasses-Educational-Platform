@@ -43,17 +43,42 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive, computed } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-
+import { reactive, onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import axios from "axios";
 export default {
   components: { DashLayout },
-  setup() {
+  props: ["id"],
+  setup(props) {
+    const store = useStore();
+    const router = useRouter();
     const state = reactive({
       semester: "",
       loading: false,
+      admin: computed(() => store.state.admin),
+    });
+
+    onMounted(async () => {
+      if (!state.admin) router.push({ name: "adminLogin" });
+      state.loading = true;
+
+      try {
+        const res = await axios.get("api_dashboard/semesters/" + props.id);
+
+        if (res.status == 200) {
+          state.semester = res.data.data.name;
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+
+      state.loading = false;
     });
 
     const rules = computed(() => {
@@ -68,17 +93,16 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
+          const res = await axios.post("api_dashboard/semesters/" + props.id, {
+            name: state.semester,
           });
-          // router.push("/home");
+          if (res.status == 200) {
+            toast.success("تم تعديل الترم بنجاح");
+          } else {
+            throw new Error(res.response.data.message);
+          }
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }

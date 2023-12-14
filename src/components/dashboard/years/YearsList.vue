@@ -16,6 +16,7 @@
         :headers="headers"
         :items="years"
         :search="search"
+        :loading="loading"
         hover
         class="table"
       >
@@ -31,50 +32,93 @@
                 >عرض المحتوى</v-tooltip
               >
             </v-btn>
-            <v-btn color="red" class="ml-4" size="small"
+            <v-btn
+              color="red"
+              class="ml-4"
+              size="small"
+              @click="deleteYear(item.id)"
               ><v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="top">حذف</v-tooltip>
             </v-btn>
-            <v-btn color="info ml-2" size="small"
+            <v-btn
+              color="info ml-2"
+              size="small"
+              :to="{ name: 'editYear', params: { id: item.id } }"
               ><v-icon>mdi-pencil</v-icon>
               <v-tooltip activator="parent" location="top">تعديل </v-tooltip>
             </v-btn>
           </div>
         </template>
       </v-data-table>
+      <v-dialog
+        v-model="dialog"
+        width="500"
+        transition="dialog-top-transition"
+        persistent
+      >
+        <v-card class="pa-4">
+          <v-card-title> هل تريد فعلا حذف السنة الدراسية ؟ </v-card-title>
+          <v-card-text>
+            بمجرد تأكيد للأمر لن يمكنك التراجع عن ذلك سوف يتم حذف:
+            <v-list>
+              <v-list-item>انضاف السنة الدراسية لهذه السنة</v-list-item>
+              <v-list-item> محتوى الشهور لهذه السنة</v-list-item>
+            </v-list>
+          </v-card-text>
+          <v-card-actions class="mt-5 text-center">
+            <v-btn @click="dialog = false" color="green">
+              <v-icon>mdi-close</v-icon> الغاء الامر
+            </v-btn>
+            <v-btn @click="confirmDeleteYear()" color="red" class="mr-5">
+              <v-icon>mdi-check</v-icon> تأكيد الامر
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import { toast } from "vue3-toastify";
 export default {
+  props: ["years", "loading"],
   data: () => ({
-    years: [],
     search: "",
+    dialog: false,
+    id: "",
     headers: [
       {
         key: "id",
         title: "ID",
       },
-      { key: "year", title: "الصف الدراسي" },
+      { key: "name", title: "الصف الدراسي" },
       { key: "actions", title: "" },
     ],
   }),
-  async mounted() {
-    this.years = [
-      {
-        year: "الصف الاول الثانوي",
-        id: 1,
-      },
-      {
-        year: "الصف الثاني الثانوي",
-        id: 2,
-      },
-      {
-        year: "الصف الثالث الثانوي",
-        id: 3,
-      },
-    ];
+
+  methods: {
+    async deleteYear(id) {
+      this.dialog = true;
+      this.id = id;
+    },
+    async confirmDeleteYear() {
+      try {
+        const res = await axios.delete("api_dashboard/years/" + this.id);
+        if (res.status == 200) {
+          toast.success("تم حذف السنة بنجاح", { autoClose: 1000 });
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    },
   },
 };
 </script>

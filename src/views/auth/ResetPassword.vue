@@ -8,7 +8,7 @@
         :loading="state.loading"
       >
         <v-card-title class="mb-4 text-center">تغيير كلمة المرور</v-card-title>
-
+        
         <v-stepper
           :items="['ادخل الرقم القومي', 'ادخل كلمة السر الجديدة']"
           elevation="0"

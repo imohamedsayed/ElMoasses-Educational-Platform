@@ -93,6 +93,7 @@ const actions = {
         axios.defaults.headers.common["Authorization"] = "Bearer " + token;
         context.commit("setToken", token);
         context.commit("setStudent", student);
+        context.commit("setAdmin", null);
       } else {
         throw new Error(res.response.data.error);
       }
@@ -121,6 +122,24 @@ const actions = {
       throw new Error(error.message);
     }
   },
+  async adminLogin(context, data) {
+    try {
+      const res = await axios.post("/api_dashboard/login", data);
+      if (res.status == 200) {
+        const { user, access_token } = res.data;
+
+        axios.defaults.headers.common["Authorization"] =
+          "Bearer " + access_token;
+        context.commit("setToken", access_token);
+        context.commit("setAdmin", user);
+        context.commit("setStudent", null);
+      } else {
+        throw new Error(res.response.data.error);
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
   async refreshToken({ commit, state }) {
     try {
       if (state.user) {
@@ -137,9 +156,15 @@ const actions = {
   },
   async logout(context) {
     try {
-      let res = await axios.post("api/logout");
+      if (context.state.student) {
+        await axios.post("api/logout");
+      } else {
+        await axios.post("api_dashboard/logout");
+      }
       context.commit("logout");
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error while logging out: ", error);
+    }
   },
   removeStudent(context) {
     context.commit("logout");

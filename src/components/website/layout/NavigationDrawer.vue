@@ -122,6 +122,8 @@
 <script>
 import { reactive, computed } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
 export default {
   inject: ["Emitter"],
   data: () => ({
@@ -135,13 +137,15 @@ export default {
     );
   },
   setup() {
+    const router = useRouter();
+
     const store = useStore();
     const state = reactive({
       student: computed(() => store.state.student),
     });
     const logout = async () => {
       await store.dispatch("logout");
-      location.reload();
+      router.push({ name: "landing" });
     };
     return { state, logout };
   },

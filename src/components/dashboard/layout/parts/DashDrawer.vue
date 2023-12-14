@@ -5,10 +5,11 @@
     :rail="AppRail"
     permanent
     @click="AppRail = false"
+    v-if="state.admin"
   >
     <v-list-item
-      prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-      title="John Leider"
+      :prepend-avatar="require('@/assets/images/user.jpg')"
+      :title="state.admin.name"
       nav
     >
       <template v-slot:append>
@@ -29,12 +30,6 @@
         value="home"
         color="green-lighten-1"
         :to="{ name: 'dashHome' }"
-      ></v-list-item>
-      <v-list-item
-        prepend-icon="mdi-account"
-        title="حسابي"
-        value="account"
-        color="green-lighten-1"
       ></v-list-item>
 
       <v-list-group>
@@ -103,6 +98,9 @@
 </template>
 
 <script>
+import { computed } from "vue";
+import { reactive } from "vue";
+import { useStore } from "vuex";
 export default {
   inject: ["Emitter"],
   data: () => ({
@@ -114,6 +112,13 @@ export default {
       "toggleDashDrawer",
       () => (this.AppDrawer = !this.AppDrawer)
     );
+  },
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      admin: computed(() => store.state.admin),
+    });
+    return { state };
   },
 };
 </script>

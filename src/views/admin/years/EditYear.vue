@@ -4,7 +4,7 @@
       <v-card class="mt-10 dash-card pa-4" :loading="state.loading">
         <h2>
           <v-icon class="ml-2">mdi-plus-circle</v-icon>
-          اضافة سنة دراسية جديدة
+          تعديل السنة الدراسية
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <form class="pa-10" @submit.prevent="edit">
@@ -43,18 +43,25 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive, computed } from "vue";
+import { reactive, onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import axios from "axios";
 
 export default {
   components: { DashLayout },
   props: ["id"],
-  setup() {
+  setup(props) {
+    const store = useStore();
+    const router = useRouter();
     const state = reactive({
       year: "",
       loading: false,
+      admin: computed(() => store.state.admin),
     });
 
     const rules = computed(() => {
@@ -62,6 +69,29 @@ export default {
         year: { required },
       };
     });
+
+    onMounted(async () => {
+      if (!state.admin) router.push({ name: "adminLogin" });
+
+      state.loading = true;
+
+      try {
+        const res = await axios.get("api_dashboard/years/" + props.id);
+
+        if (res.status == 200) {
+          state.year = res.data.data.name;
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        toast.error(error.message, {
+          autoClose: 1500,
+        });
+      }
+
+      state.loading = false;
+    });
+
     const v$ = useVuelidate(rules, state);
 
     const edit = async () => {
@@ -69,17 +99,17 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
+          const res = await axios.post("api_dashboard/years/" + props.id, {
+            name: state.year,
           });
-          // router.push("/home");
+
+          if (res.status == 200) {
+            toast.success("تم تعديل السنة الدراسية بنجاح");
+          } else {
+            throw new Error(res.response.data.message);
+          }
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }

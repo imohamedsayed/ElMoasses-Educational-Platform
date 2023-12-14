@@ -1,7 +1,11 @@
 <template>
   <div class="admin-login">
     <v-container>
-      <v-card class="from-card pa-7 mx-auto" max-width="720px" :loading="state.loading">
+      <v-card
+        class="from-card pa-7 mx-auto"
+        max-width="720px"
+        :loading="state.loading"
+      >
         <v-card-title class="text-center">
           <v-icon class="ml-2">mdi-monitor</v-icon>
           تسجيل الدخول الي لوحة التحكم
@@ -20,6 +24,7 @@
             "
           ></v-text-field>
           <v-text-field
+            type="password"
             label="الرقم السري"
             v-model="state.password"
             variant="outlined"
@@ -31,7 +36,11 @@
             "
           ></v-text-field>
           <div class="text-center">
-            <v-btn color="green-lighten-1" variant="flat" type="submit" :loading="state.loading"
+            <v-btn
+              color="green-lighten-1"
+              variant="flat"
+              type="submit"
+              :loading="state.loading"
               >تسجيل الدخول</v-btn
             >
           </div>
@@ -46,9 +55,12 @@ import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength } from "@vuelidate/validators";
-
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   setup() {
+    const store = useStore();
+    const router = useRouter();
     const state = reactive({
       email: "",
       password: "",
@@ -68,17 +80,17 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
+          let data = {
+            email: state.email,
+            password: state.password,
+          };
+          await store.dispatch("adminLogin", data);
           toast.success("Login Successfully", {
             autoClose: 1000,
           });
-          // router.push("/home");
+          router.push({ name: "dashHome" });
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }

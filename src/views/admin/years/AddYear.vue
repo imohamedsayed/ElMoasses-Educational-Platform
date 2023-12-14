@@ -47,6 +47,7 @@ import { reactive, computed } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import axios from "axios";
 
 export default {
   components: { DashLayout },
@@ -68,18 +69,19 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
+          const res = await axios.post("api_dashboard/years", {
+            name: state.year,
           });
-          // router.push("/home");
+          if (res.status == 200) {
+            toast.success("تم اضافة السنة الدراسية بنجاح", {
+              autoClose: 1500,
+            });
+          } else {
+            throw new Error("حدث خطأ ما, عاود المحاولة لاحقا");
+          }
         } catch (err) {
-          toast.error(err, {
-            autoClose: 1000,
+          toast.error(err.message, {
+            autoClose: 1500,
           });
         }
 
