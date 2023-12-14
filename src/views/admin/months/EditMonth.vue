@@ -3,8 +3,8 @@
     <v-container>
       <v-card class="mt-10 dash-card pa-4" :loading="state.loading">
         <h2>
-          <v-icon class="ml-2">mdi-plus-circle</v-icon>
-          اضافة شهر جديد
+          <v-icon class="ml-2">mdi-calendar-edit</v-icon>
+          تعديل الشهر الدراسي
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <form class="pa-10" @submit.prevent="add">
@@ -56,15 +56,19 @@
                 prepend-inner-icon="mdi-image"
                 color="teal-darken-1"
                 v-model="state.image"
-                :error-messages="
-                  v$.image.$error ? v$.image.$errors[0].$message : ''
-                "
                 prepend-icon="false"
+                hint="لا تقم بتحميل صورة جديدة الا اذا اردت تغيير القديمة"
               >
                 <template v-slot:prepend>
                   <v-img
                     v-if="state.image.length"
                     :src="getImageUrl()"
+                    width="80"
+                    height="53"
+                  ></v-img>
+                  <v-img
+                    v-else
+                    :src="'http://localhost:8000/' + state.storedImage"
                     width="80"
                     height="53"
                   ></v-img>
@@ -79,7 +83,7 @@
               size="large"
               type="submit"
               :loading="state.loading"
-              >اضافة</v-btn
+              >تعديل</v-btn
             >
           </div>
         </form>
@@ -90,29 +94,51 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import axios from "axios";
 export default {
   components: { DashLayout },
   props: ["id"],
-  setup() {
+  setup(props) {
+    const store = useStore();
+    const router = useRouter();
     const state = reactive({
       name: "",
       loading: false,
       price: "",
       status: false,
       image: "",
+      storedImage: "",
+      admin: computed(() => store.state.admin),
     });
 
+    onMounted(async () => {
+      if (!state.admin) router.push({ name: "adminLogin" });
+
+      try {
+        const res = await axios.get("api_dashboard/months/" + props.id);
+        if (res.status == 200) {
+          const month = res.data.data;
+          state.name = month.name;
+          state.price = month.price;
+          state.storedImage = month.image;
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    });
     const rules = computed(() => {
       return {
         name: { required },
         price: { required },
         status: { required },
-        image: { required },
       };
     });
     const v$ = useVuelidate(rules, state);
@@ -122,24 +148,38 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
-          });
-          // router.push("/home");
+          const data = {
+            name: state.name,
+            price: state.price,
+            image: state.image[0] || null,
+          };
+
+          const res = await axios.post(
+            "api_dashboard/months/" + props.id,
+            data,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          if (res.status == 200) {
+            console.log(res);
+
+            toast.success("تم تعديل بيانات الشهر بنجاح");
+          } else {
+            throw new Error(res.response.data.message);
+          }
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }
 
         state.loading = false;
       } else {
-        toast.error("ادخل الصف الدراسي", {
+        toast.warning("ادخل بيانات الشهر الدراسي بشكل صحيح", {
           autoClose: 1000,
         });
       }

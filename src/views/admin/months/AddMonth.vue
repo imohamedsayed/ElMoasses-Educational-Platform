@@ -90,20 +90,32 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import axios from "axios";
 
 export default {
+  props: ["sid"],
   components: { DashLayout },
-  setup() {
+  setup(props) {
+    const store = useStore();
+    const router = useRouter();
+
     const state = reactive({
       name: "",
       loading: false,
       price: "",
       status: false,
       image: "",
+      admin: computed(() => store.state.admin),
+    });
+
+    onMounted(() => {
+      if (!state.admin) router.push({ name: "adminLogin" });
     });
 
     const rules = computed(() => {
@@ -121,24 +133,33 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
+          const data = {
+            name: state.name,
+            price: state.price,
+            image: state.image[0],
+            semester_id: props.sid,
+          };
+
+          const res = await axios.post("api_dashboard/months", data, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           });
-          // router.push("/home");
+
+          if (res.status == 200) {
+            toast.success("تم اضافة الشهر بنجاح");
+          } else {
+            throw new Error(res.response.data.message);
+          }
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }
 
         state.loading = false;
       } else {
-        toast.error("ادخل الصف الدراسي", {
+        toast.error("ادخل بيانات الشهر بشكل صحيح", {
           autoClose: 1000,
         });
       }

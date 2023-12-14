@@ -22,7 +22,7 @@
       </div>
       <v-data-table
         :headers="headers"
-        :items="years"
+        :items="months"
         :search="search"
         hover
         class="table"
@@ -30,7 +30,7 @@
         <template v-slot:item.image="{ item }">
           <v-card class="my-2" elevation="2" rounded>
             <v-img
-              :src="`https://cdn.vuetifyjs.com/docs/images/graphics/gpus/${item.image}`"
+              :src="`http://localhost:8000/${item.image}`"
               height="64"
               cover
             ></v-img>
@@ -51,7 +51,11 @@
                 >عرض المحتوى</v-tooltip
               >
             </v-btn>
-            <v-btn color="red" class="ml-4 mb-2" size="small"
+            <v-btn
+              color="red"
+              class="ml-4 mb-2"
+              size="small"
+              @click="deleteMonth(item.id)"
               ><v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="top">حذف</v-tooltip>
             </v-btn>
@@ -70,37 +74,80 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-dialog
+      v-model="dialog"
+      width="500"
+      transition="dialog-top-transition"
+      persistent
+    >
+      <v-card class="pa-4">
+        <v-card-title> هل تريد فعلا حذف الشهر ؟ </v-card-title>
+        <v-card-text>
+          بمجرد تأكيد للأمر لن يمكنك التراجع عن ذلك سوف يتم حذف:
+          <v-list>
+            <v-list-item> محتوى الشهور </v-list-item>
+            <v-list-item
+              >المذكرات والدروس وايضا الامتحانات ونتائج الامتحانات سيتم
+              حذفها</v-list-item
+            >
+          </v-list>
+        </v-card-text>
+        <v-card-actions class="mt-5 text-center">
+          <v-btn @click="dialog = false" color="green">
+            <v-icon>mdi-close</v-icon> الغاء الامر
+          </v-btn>
+          <v-btn @click="confirmDeleteMonth" color="red" class="mr-5">
+            <v-icon>mdi-check</v-icon> تأكيد الامر
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import { toast } from "vue3-toastify";
+
 export default {
-  props: ["yid", "sid"],
+  props: ["yid", "sid", "months"],
   data: () => ({
-    years: [],
     search: "",
+    dialog: false,
+    id: "",
     headers: [
       {
         key: "id",
         title: "ID",
       },
-      { key: "month", title: "شهر " },
+      { key: "name", title: "شهر " },
       { key: "price", title: "السعر" },
       { key: "image", title: "صورة" },
-      { key: "status", title: "الحالة" },
+      // { key: "status", title: "الحالة" },
       { key: "actions", title: "" },
     ],
   }),
-  async mounted() {
-    this.years = [
-      {
-        id: 1,
-        month: "مارس",
-        price: 100,
-        image: "3.png",
-        status: false,
-      },
-    ];
+  methods: {
+    async deleteMonth(id) {
+      this.dialog = true;
+      this.id = id;
+    },
+    async confirmDeleteMonth() {
+      try {
+        const res = await axios.delete("api_dashboard/months/" + this.id);
+        if (res.status == 200) {
+          toast.success("تم حذف الشهر الدراسي بنجاح", { autoClose: 1000 });
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    },
   },
 };
 </script>
