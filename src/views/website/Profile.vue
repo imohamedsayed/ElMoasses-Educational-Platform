@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <v-container>
+    <v-container v-if="state.student">
       <div class="user">
         <v-card class="py-15">
           <div class="img">
@@ -27,9 +27,12 @@
           <v-card-title
             class="text-center"
             style="font-size: 2rem; margin-top: -3%"
-            >محمد سيد عثمان سيد</v-card-title
           >
-          <v-card-subtitle class="text-center">mso@gmail.com</v-card-subtitle>
+            {{ state.student.firstName + " " + state.student.lastName }}
+          </v-card-title>
+          <v-card-subtitle class="text-center">{{
+            state.student.phone_name
+          }}</v-card-subtitle>
 
           <v-divider class="my-15"></v-divider>
 
@@ -83,14 +86,23 @@
 import AppLayout from "@/components/website/AppLayout.vue";
 import MonthList from "@/components/website/Month/MonthsList.vue";
 import NotesList from "@/components/website/Month/content/notes/NotesList.vue";
-import { reactive } from "vue";
+import { reactive, computed, onMounted } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   components: { AppLayout, MonthList, NotesList },
   setup() {
+    const store = useStore();
+    const router = useRouter();
+
     const state = reactive({
+      student: computed(() => store.state.student),
       tab: "courses",
     });
 
+    onMounted(() => {
+      if (!state.student) router.push({ name: "login" });
+    });
     return { state };
   },
 };

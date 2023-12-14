@@ -5,7 +5,7 @@ import { useRouter } from "vue-router";
 
 const token = store.state.token;
 
-axios.defaults.baseURL = "http://localhost:8000/api/";
+axios.defaults.baseURL = "http://localhost:8000/";
 axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
 let x = false;

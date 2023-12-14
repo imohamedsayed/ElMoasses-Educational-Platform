@@ -48,11 +48,11 @@ const actions = {
         password,
         password_confirmation: passwordConfirmation,
         acedemic_year: year,
-        fatherPhone,
-        motherPhone,
+        father_phone: fatherPhone,
+        mother_phone: motherPhone,
         national_id_card: nationalId,
       };
-      const res = await axios.post("register", data);
+      const res = await axios.post("api/register", data);
 
       if (res.status !== 201) {
         let errors = res.response.data;
@@ -77,8 +77,15 @@ const actions = {
   },
   async studentLogin(context, { phone, password }) {
     try {
-      const res = await axios.post("login", { phone_number: phone, password });
+      const res = await axios.post("api/login", {
+        phone_number: phone,
+        password,
+      });
       if (res.status == 200) {
+        if (res.data.message?.includes("limit")) {
+          throw new Error(res.data.message);
+        }
+
         const token = res.data.access_token;
         const expiresIn = res.data.expires_in;
         const student = res.data.user;
@@ -87,7 +94,7 @@ const actions = {
         context.commit("setToken", token);
         context.commit("setStudent", student);
       } else {
-        throw new Error(res.response.data.message);
+        throw new Error(res.response.data.error);
       }
     } catch (error) {
       if (error.response) throw new Error(error.response.data.error);
@@ -96,10 +103,17 @@ const actions = {
   },
   async studentUpdate(context, data) {
     try {
-      const res = await axios.post("students/" + data.id, data);
+      const res = await axios.post("api/students", data);
 
       if (res.status === 200) {
-        console.log(res);
+        const studentRefresh = await axios.get("students-refresh");
+
+        const { user, access_token, expires_in } = studentRefresh.data;
+
+        axios.defaults.headers.common["Authorization"] =
+          "Bearer " + access_token;
+        context.commit("setToken", access_token);
+        context.commit("setStudent", user);
       } else {
         throw new Error(res.response.data.message);
       }
@@ -107,9 +121,23 @@ const actions = {
       throw new Error(error.message);
     }
   },
+  async refreshToken({ commit, state }) {
+    try {
+      if (state.user) {
+      } else {
+        const studentRefresh = await axios.get("api/students-refresh");
+        const { access_token } = studentRefresh.data;
+        axios.defaults.headers.common["Authorization"] =
+          "Bearer " + access_token;
+        context.commit("setToken", access_token);
+      }
+    } catch (error) {
+      console.log("Error while refreshing token: ", error);
+    }
+  },
   async logout(context) {
     try {
-      let res = await axios.post("logout");
+      let res = await axios.post("api/logout");
       context.commit("logout");
     } catch (error) {}
   },

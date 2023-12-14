@@ -352,8 +352,8 @@ export default {
             f_name: state.firstName,
             l_name: state.lastName,
             phone_number: state.phone,
-            fatherPhone: state.fatherPhone,
-            motherPhone: state.mtherPhone,
+            father_phone: state.fatherPhone,
+            mother_phone: state.motherPhone,
             national_id_card: state.nationalId,
             acedemic_year: state.level,
           };
@@ -385,10 +385,8 @@ export default {
             password: state.newPassword,
             password_confirmation: state.passwordConfirmation,
           };
-          console.log(data);
-          const res = await axios.post("password-student");
+          const res = await axios.post("/api/password-student", data);
 
-          console.log(res);
           if (res.status == 200) {
             toast.success("تم تعديل كلمة السر بنجاح", {
               autoClose: 1000,
@@ -412,7 +410,7 @@ export default {
     const deleteAccount = async () => {
       try {
         state.dialog = false;
-        const res = await axios.delete("students");
+        const res = await axios.delete("api/students");
 
         if (res.status == 200) {
           toast.success("تم حذف حسابك بنجاح", { autoClose: 1000 });

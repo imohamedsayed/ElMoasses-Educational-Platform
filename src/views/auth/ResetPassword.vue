@@ -157,7 +157,7 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          const res = await axios.post("check-nationalId", {
+          const res = await axios.post("api/check-nationalId", {
             national_id_card: state.nationalId,
           });
           if (res.data.message.includes("not Found")) {
@@ -186,7 +186,7 @@ export default {
       if (!passCheck$.value.$error) {
         state.loading = true;
         try {
-          const res = await axios.post("reset-password", {
+          const res = await axios.post("api/reset-password", {
             id: state.id,
             password: state.password,
             password_confirmation: state.passwordConfirmation,
