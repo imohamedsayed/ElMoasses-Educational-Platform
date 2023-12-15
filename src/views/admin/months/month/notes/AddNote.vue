@@ -10,36 +10,6 @@
         <form class="pa-10" @submit.prevent="add">
           <v-row>
             <v-col cols="12" md="6">
-              <v-text-field
-                class="bg-white"
-                label="اسم الملف"
-                variant="outlined"
-                prepend-inner-icon="mdi-file-outline"
-                color="teal-darken-1"
-                hint="مثال:  ملخص جديد"
-                v-model="state.name"
-                :error-messages="
-                  v$.name.$error ? v$.name.$errors[0].$message : ''
-                "
-              >
-              </v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field
-                class="bg-white"
-                label="وصف"
-                variant="outlined"
-                prepend-inner-icon="mdi-text"
-                color="teal-darken-1"
-                hint="مثال: 150  "
-                v-model="state.price"
-                :error-messages="
-                  v$.price.$error ? v$.price.$errors[0].$message : ''
-                "
-              >
-              </v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
               <v-file-input
                 class="bg-white"
                 label="المف"
@@ -52,6 +22,22 @@
                 "
               >
               </v-file-input>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                class="bg-white"
+                label="وصف"
+                variant="outlined"
+                prepend-inner-icon="mdi-text"
+                color="teal-darken-1"
+                v-model="state.description"
+                :error-messages="
+                  v$.description.$error
+                    ? v$.description.$errors[0].$message
+                    : ''
+                "
+              >
+              </v-text-field>
             </v-col>
           </v-row>
           <div class="text-center">
@@ -72,26 +58,35 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import axios from "axios";
 export default {
   components: { DashLayout },
-  setup() {
+  props: ["mid"],
+  setup(props) {
+    const store = useStore();
+    const router = useRouter();
+
     const state = reactive({
-      name: "",
       loading: false,
-      price: "",
+      description: "",
       status: false,
       file: "",
+      admin: computed(() => store.state.admin),
+    });
+
+    onMounted(() => {
+      if (!state.admin) router.push({ name: "adminLogin" });
     });
 
     const rules = computed(() => {
       return {
-        name: { required },
-        price: { required },
+        description: { required },
         status: { required },
         file: { required },
       };
@@ -103,38 +98,37 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
-          });
-          // router.push("/home");
+          const data = {
+            name: state.file[0],
+            descrption: state.description,
+            month_id: props.mid,
+          };
+
+          console.log(data);
+          const res = await axios.post("api_dashboard/attachments", data);
+
+          if (res.status == 200) {
+            toast.success("تم اضافة الملحق بنجاح");
+          } else {
+            throw new Error(res.response.data.message);
+          }
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }
 
         state.loading = false;
       } else {
-        toast.error("ادخل الصف الدراسي", {
+        toast.error("ادخل بيانات الملحق بشكل كامل وصحيح", {
           autoClose: 1000,
         });
       }
     };
 
-    const getImageUrl = () => {
-      if (state.image.length) {
-        return window.URL.createObjectURL(state.image[0]);
-      } else {
-        return "";
-      }
-    };
+  
 
-    return { state, add, v$, getImageUrl };
+    return { state, add, v$ };
   },
 };
 </script>

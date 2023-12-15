@@ -8,7 +8,7 @@
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <div class="mt-16">
-          <LecturesList />
+          <LecturesList :lectures="state.lectures" />
         </div>
       </v-card>
     </v-container>
@@ -17,13 +17,39 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import LecturesList from "@/components/dashboard/lectures/LectureList.vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import { toast } from "vue3-toastify";
+import axios from "axios";
 export default {
   components: { DashLayout, LecturesList },
   setup() {
+    const store = useStore();
+    const router = useRouter();
+
     const state = reactive({
       loading: false,
+      lectures: [],
+      admin: computed(() => store.state.admin),
+    });
+
+    onMounted(async () => {
+      if (!state.admin) router.push({ name: "adminLogin" });
+      state.loading = true;
+      try {
+        const res = await axios.get("api_dashboard/contents");
+
+        if (res.status == 200) {
+          state.lectures = res.data.data;
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+      state.loading = false;
     });
 
     return { state };

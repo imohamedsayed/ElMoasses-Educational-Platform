@@ -10,19 +10,18 @@
         <form class="pa-10" @submit.prevent="edit">
           <v-row>
             <v-col cols="12" md="6">
-              <v-text-field
+              <v-file-input
                 class="bg-white"
-                label="اسم الملف"
+                label="المف"
                 variant="outlined"
-                prepend-inner-icon="mdi-file-outline"
+                prepend-inner-icon="mdi-file-upload-outline"
                 color="teal-darken-1"
-                hint="مثال:  ملخص جديد"
                 v-model="state.name"
                 :error-messages="
                   v$.name.$error ? v$.name.$errors[0].$message : ''
                 "
               >
-              </v-text-field>
+              </v-file-input>
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
@@ -31,27 +30,14 @@
                 variant="outlined"
                 prepend-inner-icon="mdi-text"
                 color="teal-darken-1"
-                hint="مثال: 150  "
-                v-model="state.price"
+                v-model="state.description"
                 :error-messages="
-                  v$.price.$error ? v$.price.$errors[0].$message : ''
+                  v$.description.$error
+                    ? v$.description.$errors[0].$message
+                    : ''
                 "
               >
               </v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-file-input
-                class="bg-white"
-                label="المف"
-                variant="outlined"
-                prepend-inner-icon="mdi-file-upload-outline"
-                color="teal-darken-1"
-                v-model="state.file"
-                :error-messages="
-                  v$.file.$error ? v$.file.$errors[0].$message : ''
-                "
-              >
-              </v-file-input>
             </v-col>
           </v-row>
           <div class="text-center">
@@ -72,29 +58,48 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import axios from "axios";
 export default {
   components: { DashLayout },
   props: ["id"],
-  setup() {
+  setup(props) {
+    const store = useStore();
+    const router = useRouter();
     const state = reactive({
       name: "",
       loading: false,
-      price: "",
+      description: "",
       status: false,
-      file: "",
+      admin: computed(() => store.state.admin),
+    });
+
+    onMounted(async () => {
+      if (!state.admin) router.push({ name: "adminLogin" });
+
+      try {
+        const res = await axios.get("api_dashboard/attachments/" + props.id);
+
+        if (res.status == 200) {
+          const attachment = res.data.data;
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
     });
 
     const rules = computed(() => {
       return {
         name: { required },
-        price: { required },
+        description: { required },
         status: { required },
-        file: { required },
       };
     });
     const v$ = useVuelidate(rules, state);
@@ -104,38 +109,37 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
-          });
-          // router.push("/home");
+          const data = {
+            name: state.file[0] || null,
+            descrption: state.description,
+          };
+
+          console.log(data);
+          const res = await axios.post(
+            "api_dashboard/attachments/" + props.id,
+            data
+          );
+
+          if (res.status == 200) {
+            toast.success("تم تعديل الملحق بنجاح");
+          } else {
+            throw new Error(res.response.data.message);
+          }
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }
 
         state.loading = false;
       } else {
-        toast.error("ادخل الصف الدراسي", {
+        toast.error("ادخل بيانات الملحق بشكل كامل وصحيح", {
           autoClose: 1000,
         });
       }
     };
 
-    const getImageUrl = () => {
-      if (state.image.length) {
-        return window.URL.createObjectURL(state.image[0]);
-      } else {
-        return "";
-      }
-    };
-
-    return { state, edit, v$, getImageUrl };
+    return { state, edit, v$ };
   },
 };
 </script>

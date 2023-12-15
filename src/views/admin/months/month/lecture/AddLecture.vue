@@ -66,21 +66,29 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import axios from "axios";
 export default {
   components: { DashLayout },
-  setup() {
+  props: ["mid"],
+  setup(props) {
+    const store = useStore();
+    const router = useRouter();
     const state = reactive({
       name: "",
       loading: false,
       link: "",
       status: false,
+      admin: computed(() => store.state.admin),
     });
-
+    onMounted(() => {
+      if (!state.admin) router.push({ name: "adminLogin" });
+    });
     const rules = computed(() => {
       return {
         name: { required },
@@ -95,24 +103,27 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
-          });
-          // router.push("/home");
+          const data = {
+            name: state.name,
+            url: state.link,
+            month_id: props.mid,
+          };
+
+          const res = await axios.post("api_dashboard/contents", data);
+          if (res.status == 200) {
+            toast.success("تم اضافة المحاضرة بنجاح");
+          } else {
+            throw new Error(res.response.data.message);
+          }
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }
 
         state.loading = false;
       } else {
-        toast.error("ادخل الصف الدراسي", {
+        toast.error(" ادخل بيانات المحاضرة بشكل صحيح", {
           autoClose: 1000,
         });
       }

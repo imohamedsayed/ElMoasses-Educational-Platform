@@ -22,14 +22,18 @@
       </div>
       <v-data-table
         :headers="headers"
-        :items="years"
+        :items="lectures"
         :search="search"
         hover
         class="table"
       >
         <template v-slot:item.actions="{ item }">
           <div class="text-end">
-            <v-btn color="red" class="ml-4" size="small"
+            <v-btn
+              color="red"
+              class="ml-4"
+              size="small"
+              @click="deleteLecture(item.id)"
               ><v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="top">حذف</v-tooltip>
             </v-btn>
@@ -47,35 +51,78 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-dialog
+      v-model="dialog"
+      width="500"
+      transition="dialog-top-transition"
+      persistent
+    >
+      <v-card class="pa-4" :loading="loading">
+        <v-card-title> هل تريد فعلا حذف المحاضرة؟ </v-card-title>
+        <v-card-text> بمجرد تأكيد للأمر لن يمكنك التراجع عن ذلك </v-card-text>
+        <v-card-actions class="mt-5 text-center">
+          <v-btn @click="dialog = false" color="green">
+            <v-icon>mdi-close</v-icon> الغاء الامر
+          </v-btn>
+          <v-btn
+            @click="confirmDeleteLecture"
+            color="red"
+            class="mr-5"
+            :loading="loading"
+          >
+            <v-icon>mdi-check</v-icon> تأكيد الامر
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import { toast } from "vue3-toastify";
+
 export default {
-  props: ["yid", "sid", "mid"],
+  props: ["yid", "sid", "mid", "lectures"],
   data: () => ({
-    years: [],
     search: "",
+    dialog: false,
+    id: "",
+    loading: false,
     headers: [
       {
         key: "id",
         title: "ID",
       },
       { key: "name", title: "الدرس" },
-      { key: "link", title: "الرابط" },
-      { key: "status", title: "مفعل ؟" },
+      { key: "url", title: "الرابط" },
+      // { key: "status", title: "مفعل ؟" },
       { key: "actions" },
     ],
   }),
-  async mounted() {
-    this.years = [
-      {
-        id: 1,
-        name: "قانون نيوتن الثاني",
-        link: "رابط",
-        status: true,
-      },
-    ];
+  methods: {
+    async deleteLecture(id) {
+      this.dialog = true;
+      this.id = id;
+    },
+    async confirmDeleteLecture() {
+      this.loading = true;
+      try {
+        const res = await axios.delete("api_dashboard/contents/" + this.id);
+        if (res.status == 200) {
+          toast.success("تم حذف المحاضرة بنجاح", { autoClose: 1000 });
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+      this.loading = false;
+    },
   },
 };
 </script>
