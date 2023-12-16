@@ -103,14 +103,18 @@ export default {
             descrption: state.description,
             month_id: props.mid,
           };
+          const res = await axios.post("api_dashboard/attachments", data, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
-          console.log(data);
-          const res = await axios.post("api_dashboard/attachments", data);
-
-          if (res.status == 200) {
+          if (res.status == 201) {
             toast.success("تم اضافة الملحق بنجاح");
           } else {
-            throw new Error(res.response.data.message);
+            throw new Error(
+              res.response?.data?.message || "حدث خطأ ما, عاود المحاولة لاحقا"
+            );
           }
         } catch (err) {
           toast.error(err.message, {
@@ -125,8 +129,6 @@ export default {
         });
       }
     };
-
-  
 
     return { state, add, v$ };
   },

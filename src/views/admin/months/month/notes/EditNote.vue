@@ -9,7 +9,7 @@
         <v-divider class="mt-4 mb-15"></v-divider>
         <form class="pa-10" @submit.prevent="edit">
           <v-row>
-            <v-col cols="12" md="6">
+            <!-- <v-col cols="12" md="6">
               <v-file-input
                 class="bg-white"
                 label="المف"
@@ -17,12 +17,13 @@
                 prepend-inner-icon="mdi-file-upload-outline"
                 color="teal-darken-1"
                 v-model="state.name"
-                :error-messages="
-                  v$.name.$error ? v$.name.$errors[0].$message : ''
-                "
               >
               </v-file-input>
-            </v-col>
+              <v-alert type="warning" closable
+                >فقط ارفق ملف جديد في حالة اردت استبدال الملف الموجود
+                مسبقا</v-alert
+              >
+            </v-col> -->
             <v-col cols="12" md="6">
               <v-text-field
                 class="bg-white"
@@ -47,7 +48,7 @@
               size="large"
               type="submit"
               :loading="state.loading"
-              >اضافة</v-btn
+              >تعديل</v-btn
             >
           </div>
         </form>
@@ -67,7 +68,7 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 export default {
   components: { DashLayout },
-  props: ["id"],
+  props: ["mid", "id"],
   setup(props) {
     const store = useStore();
     const router = useRouter();
@@ -77,16 +78,19 @@ export default {
       description: "",
       status: false,
       admin: computed(() => store.state.admin),
+      id: "",
     });
 
     onMounted(async () => {
       if (!state.admin) router.push({ name: "adminLogin" });
 
       try {
-        const res = await axios.get("api_dashboard/attachments/" + props.id);
+        const res = await axios.get("api_dashboard/attachments/" + props.mid);
 
         if (res.status == 200) {
-          const attachment = res.data.data;
+          const attachment = res.data.data[0];
+          state.description = attachment.descrption;
+          state.id = attachment.id;
         } else {
           throw new Error(res.response.data.message);
         }
@@ -97,7 +101,6 @@ export default {
 
     const rules = computed(() => {
       return {
-        name: { required },
         description: { required },
         status: { required },
       };
@@ -110,17 +113,14 @@ export default {
         state.loading = true;
         try {
           const data = {
-            name: state.file[0] || null,
             descrption: state.description,
           };
 
-          console.log(data);
           const res = await axios.post(
-            "api_dashboard/attachments/" + props.id,
+            "api_dashboard/attachments/" + state.id,
             data
           );
-
-          if (res.status == 200) {
+          if (res.status == 202) {
             toast.success("تم تعديل الملحق بنجاح");
           } else {
             throw new Error(res.response.data.message);

@@ -26,7 +26,7 @@ import axios from "axios";
 export default {
   props: ["yid"],
   components: { DashLayout, SemesterList },
-  setup() {
+  setup(props) {
     const store = useStore();
     const router = useRouter();
 
@@ -41,7 +41,9 @@ export default {
       state.loading = true;
 
       try {
-        const res = await axios.get("api_dashboard/semesters");
+        const res = await axios.get(
+          "api_dashboard/semesters/" + props.yid + "/year"
+        );
 
         if (res.status == 200) {
           state.semesters = res.data.data;

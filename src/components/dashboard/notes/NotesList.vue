@@ -98,7 +98,7 @@ export default {
         title: "ID",
       },
       { key: "name", title: "الملف" },
-      { key: "description", title: "الوصف" },
+      { key: "descrption", title: "الوصف" },
       { key: "actions" },
     ],
   }),
@@ -111,13 +111,16 @@ export default {
       this.loading = true;
       try {
         const res = await axios.delete("api_dashboard/attachments/" + this.id);
-        if (res.status == 200) {
+        console.log(res);
+        if (res.status == 204) {
           toast.success("تم حذف المحلق بنجاح", { autoClose: 1000 });
           setTimeout(() => {
             location.reload();
           }, 1000);
         } else {
-          throw new Error(res.response.data.message);
+          throw new Error(
+            res.response?.data?.message || "حدث خطأ ما, عاود المحاولة لاحقا"
+          );
         }
       } catch (error) {
         console.log(error);

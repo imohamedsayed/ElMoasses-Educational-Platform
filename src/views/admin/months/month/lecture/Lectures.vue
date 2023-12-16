@@ -25,7 +25,8 @@ import { toast } from "vue3-toastify";
 import axios from "axios";
 export default {
   components: { DashLayout, LecturesList },
-  setup() {
+  props: ["mid"],
+  setup(props) {
     const store = useStore();
     const router = useRouter();
 
@@ -39,7 +40,9 @@ export default {
       if (!state.admin) router.push({ name: "adminLogin" });
       state.loading = true;
       try {
-        const res = await axios.get("api_dashboard/contents");
+        const res = await axios.get(
+          "api_dashboard/contents/" + props.mid + "/month"
+        );
 
         if (res.status == 200) {
           state.lectures = res.data.data;

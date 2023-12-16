@@ -153,7 +153,7 @@ export default {
             price: state.price,
             image: state.image[0] || null,
           };
-
+          console.log(props.id);
           const res = await axios.post(
             "api_dashboard/months/" + props.id,
             data,
@@ -163,13 +163,12 @@ export default {
               },
             }
           );
-
           if (res.status == 200) {
-            console.log(res);
-
             toast.success("تم تعديل بيانات الشهر بنجاح");
           } else {
-            throw new Error(res.response.data.message);
+            throw new Error(
+              res.response?.data?.message || "حدث خطأ ما, عاود المحاولة لاحقا"
+            );
           }
         } catch (err) {
           toast.error(err.message, {

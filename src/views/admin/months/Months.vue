@@ -25,7 +25,8 @@ import { toast } from "vue3-toastify";
 import axios from "axios";
 export default {
   components: { DashLayout, MonthList },
-  setup() {
+  props: ["sid"],
+  setup(props) {
     const store = useStore();
     const router = useRouter();
     const state = reactive({
@@ -38,8 +39,9 @@ export default {
       if (!state.admin) router.push({ name: "adminLogin" });
 
       try {
-        const res = await axios.get("api_dashboard/months");
-
+        const res = await axios.get(
+          "api_dashboard/months/" + props.sid + "/semester"
+        );
         if (res.status == 200) {
           state.months = res.data.data;
         } else {

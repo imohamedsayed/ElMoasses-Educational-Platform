@@ -8,7 +8,7 @@
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <div class="mt-16">
-          <NotesList :attachments="state.attachments"/>
+          <NotesList :attachments="state.attachments" />
         </div>
       </v-card>
     </v-container>
@@ -24,8 +24,9 @@ import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
 import axios from "axios";
 export default {
+  props: ["mid"],
   components: { DashLayout, NotesList },
-  setup() {
+  setup(props) {
     const store = useStore();
     const router = useRouter();
 
@@ -33,17 +34,16 @@ export default {
       loading: false,
       attachments: [],
       admin: computed(() => store.state.admin),
+      token: computed(() => store.state.token),
     });
 
     onMounted(async () => {
       if (!state.admin) router.push({ name: "adminLogin" });
       state.loading = true;
       try {
-        const res = await axios.get("api_dashboard/attachments");
-        console.log(res);
+        const res = await axios.get("api_dashboard/attachments/" + props.mid);
         if (res.status == 200) {
           state.attachments = res.data.data;
-          console.log(state.attachments);
         } else {
           throw new Error(res.response.data.message);
         }
