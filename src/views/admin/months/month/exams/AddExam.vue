@@ -3,32 +3,33 @@
     <v-container>
       <v-card class="mt-10 dash-card pa-4" :loading="state.loading">
         <h2>
-          <v-icon class="ml-2">mdi-file-plus-outline</v-icon>
-          اضافة ملحق جديد
+          <v-icon class="ml-2">mdi-file-document-outline</v-icon>
+          اضافة امتحان جديد
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <form class="pa-10" @submit.prevent="add">
           <v-row>
             <v-col cols="12" md="6">
-              <v-file-input
+              <v-text-field
                 class="bg-white"
-                label="المف"
+                label="اسم الامتحان"
                 variant="outlined"
-                prepend-inner-icon="mdi-file-upload-outline"
+                prepend-inner-icon="mdi-file-document-outline"
                 color="teal-darken-1"
-                v-model="state.file"
+                hint="مثال: امتحان الوحدة الأولي"
+                v-model="state.name"
                 :error-messages="
-                  v$.file.$error ? v$.file.$errors[0].$message : ''
+                  v$.name.$error ? v$.name.$errors[0].$message : ''
                 "
               >
-              </v-file-input>
+              </v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
                 class="bg-white"
-                label="وصف"
+                label="وصف الامتحان"
                 variant="outlined"
-                prepend-inner-icon="mdi-text"
+                prepend-inner-icon="mdi-file-document-check-outline"
                 color="teal-darken-1"
                 v-model="state.description"
                 :error-messages="
@@ -39,7 +40,47 @@
               >
               </v-text-field>
             </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                type="datetime-local"
+                class="bg-white"
+                label="معاد البدء"
+                variant="outlined"
+                prepend-inner-icon="mdi-calendar-clock-outline"
+                color="teal-darken-1"
+                v-model="state.start_at"
+                :error-messages="
+                  v$.start_at.$error ? v$.start_at.$errors[0].$message : ''
+                "
+              >
+              </v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                type="datetime-local"
+                class="bg-white"
+                label="معاد الانتهاء"
+                variant="outlined"
+                prepend-inner-icon="mdi-calendar-clock-outline"
+                color="teal-darken-1"
+                v-model="state.end_at"
+                :error-messages="
+                  v$.end_at.$error ? v$.end_at.$errors[0].$message : ''
+                "
+              >
+              </v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <p class="text-weight-bold">الحالة:</p>
+              <v-switch
+                :label="state.status ? 'مفعل' : 'غير مفعل'"
+                true-icon="mdi-check"
+                color="success"
+                v-model="state.status"
+              ></v-switch>
+            </v-col>
           </v-row>
+
           <div class="text-center">
             <v-btn
               class="mt-10"
@@ -71,24 +112,26 @@ export default {
   setup(props) {
     const store = useStore();
     const router = useRouter();
-
     const state = reactive({
-      loading: false,
+      name: "",
       description: "",
+      start_at: "",
+      end_at: "",
+      loading: false,
+      link: "",
       status: false,
-      file: "",
       admin: computed(() => store.state.admin),
     });
-
     onMounted(() => {
       if (!state.admin) router.push({ name: "adminLogin" });
     });
-
     const rules = computed(() => {
       return {
-        description: { required },
+        name: { required },
+        start_at: { required },
+        end_at: { required },
         status: { required },
-        file: { required },
+        description: { required },
       };
     });
     const v$ = useVuelidate(rules, state);
@@ -99,21 +142,18 @@ export default {
         state.loading = true;
         try {
           const data = {
-            name: state.file[0],
-            descrption: state.description,
+            name: state.name,
+            description: state.description,
+            start_at: state.start_at.replace("T", " "),
+            end_at: state.end_at.replace("T", " "),
+            status: state.status,
             month_id: props.mid,
           };
-          const res = await axios.post("api_dashboard/attachments", data, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
+          const res = await axios.post("api_dashboard/exams", data);
           if (res.status == 201) {
-            toast.success("تم اضافة الملحق بنجاح");
+            toast.success("تم اضافة الامتحان بنجاح");
           } else {
-            throw new Error(
-              res.response?.data?.message || "حدث خطأ ما, عاود المحاولة لاحقا"
-            );
+            throw new Error(res.response.data.message);
           }
         } catch (err) {
           toast.error(err.message, {
@@ -123,11 +163,12 @@ export default {
 
         state.loading = false;
       } else {
-        toast.error("ادخل بيانات الملحق بشكل كامل وصحيح", {
+        toast.error(" ادخل بيانات الامتحان بشكل صحيح", {
           autoClose: 1000,
         });
       }
     };
+
 
     return { state, add, v$ };
   },

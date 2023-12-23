@@ -14,21 +14,37 @@ import ResetPassword from "../views/auth/ResetPassword.vue";
 import AdminLogin from "../views/auth/AdminLogin.vue";
 import DashHome from "../views/admin/Home.vue";
 import AddYear from "../views/admin/years/AddYear.vue";
+
 import Years from "../views/admin/years/Years.vue";
 import EditYear from "../views/admin/years/EditYear.vue";
 import Semesters from "../views/admin/semester/Semesters.vue";
+
 import AddSemester from "../views/admin/semester/AddSemester.vue";
 import EditSemester from "../views/admin/semester/EditSemester.vue";
 import AddMonth from "../views/admin/months/AddMonth.vue";
+
 import Months from "../views/admin/months/Months.vue";
 import EditMonth from "../views/admin/months/EditMonth.vue";
 import DashMonth from "../views/admin/months/month/Month.vue";
+
 import Lectures from "../views/admin/months/month/lecture/Lectures.vue";
 import AddLecture from "../views/admin/months/month/lecture/AddLecture.vue";
 import EditLecture from "../views/admin/months/month/lecture/EditLecture.vue";
+
 import DashNotes from "../views/admin/months/month/notes/Notes.vue";
 import AddNote from "../views/admin/months/month/notes/AddNote.vue";
 import EditNote from "../views/admin/months/month/notes/EditNote.vue";
+
+import Exams from "../views/admin/months/month/exams/Exams.vue";
+import AddExam from "../views/admin/months/month/exams/AddExam.vue";
+import EditExam from "../views/admin/months/month/exams/EditExam.vue";
+
+import Questions from "../views/admin/months/month/exams/question/Questions.vue";
+import AddQuestion from "../views/admin/months/month/exams/question/AddQuestion.vue";
+import EditQuestion from "../views/admin/months/month/exams/question/EditQuestion.vue";
+
+import MultipleChoices from "../views/admin/months/month/exams/question/options/MultipleChoices.vue";
+import TF from "../views/admin/months/month/exams/question/options/TF.vue";
 
 import Products from "../views/admin/products/Products.vue";
 import EditProduct from "../views/admin/products/EditProduct.vue";
@@ -285,6 +301,79 @@ const routes = [
     props: true,
     meta: {
       title: "تعديل مذكرة",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/exams",
+    name: "monthExams",
+    component: Exams,
+    props: true,
+    meta: {
+      title: "الامتحانات",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/exams/add",
+    name: "addMonthExam",
+    component: AddExam,
+    props: true,
+    meta: {
+      title: "اضافة امتحان",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/exams/:id/edit",
+    name: "editMonthExam",
+    component: EditExam,
+    props: true,
+    meta: {
+      title: "تعديل امتحان",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/exams/:eid/questions",
+    name: "questions",
+    component: Questions,
+    props: true,
+    meta: {
+      title: "الاسئلة",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/exams/:eid/questions/add",
+    name: "addQuestion",
+    component: AddQuestion,
+    props: true,
+    meta: {
+      title: "اضافة سؤال",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/exams/:eid/questions/:qid/mcq",
+    name: "addMCQ",
+    component: MultipleChoices,
+    props: true,
+    meta: {
+      title: "اضافة الاجابات",
+    },
+  },
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/exams/:eid/questions/:qid/tf",
+    name: "addTF",
+    component: TF,
+    props: true,
+    meta: {
+      title: "اضافة الاجابات",
+    },
+  },
+
+  {
+    path: "/dashboard/years/:yid/semesters/:sid/months/:mid/exams/:eid/questions/:id/edit",
+    name: "editQuestion",
+    component: EditQuestion,
+    props: true,
+    meta: {
+      title: "تعديل السؤال",
     },
   },
   {

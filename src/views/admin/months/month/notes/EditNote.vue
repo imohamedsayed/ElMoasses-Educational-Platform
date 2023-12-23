@@ -78,19 +78,17 @@ export default {
       description: "",
       status: false,
       admin: computed(() => store.state.admin),
-      id: "",
     });
 
     onMounted(async () => {
       if (!state.admin) router.push({ name: "adminLogin" });
 
       try {
-        const res = await axios.get("api_dashboard/attachments/" + props.mid);
-
+        const res = await axios.get("api_dashboard/attachments/" + props.id);
         if (res.status == 200) {
-          const attachment = res.data.data[0];
+          const attachment = res.data.data;
+
           state.description = attachment.descrption;
-          state.id = attachment.id;
         } else {
           throw new Error(res.response.data.message);
         }
@@ -117,7 +115,7 @@ export default {
           };
 
           const res = await axios.post(
-            "api_dashboard/attachments/" + state.id,
+            "api_dashboard/attachments/" + props.id,
             data
           );
           if (res.status == 202) {

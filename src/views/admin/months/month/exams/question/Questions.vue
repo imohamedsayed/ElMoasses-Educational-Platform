@@ -3,12 +3,12 @@
     <v-container>
       <v-card class="mt-10 dash-card pa-4" :loading="state.loading">
         <h2>
-          <v-icon class="ml-2">mdi-pdf-box</v-icon>
-          الملحقات
+          <v-icon class="ml-2">mdi-chat-question-outline</v-icon>
+          الاسئلة
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <div class="mt-16">
-          <NotesList :attachments="state.attachments" />
+          <QuestionsList :questions="state.questions" />
         </div>
       </v-card>
     </v-container>
@@ -18,23 +18,22 @@
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
 import { reactive, computed, onMounted } from "vue";
-import NotesList from "@/components/dashboard/notes/NotesList.vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
 import axios from "axios";
+import QuestionsList from "@/components/dashboard/questions/QuestionsList.vue";
 export default {
-  props: ["mid"],
-  components: { DashLayout, NotesList },
+  components: { DashLayout, QuestionsList },
+  props: ["eid"],
   setup(props) {
     const store = useStore();
     const router = useRouter();
 
     const state = reactive({
       loading: false,
-      attachments: [],
+      questions: [],
       admin: computed(() => store.state.admin),
-      token: computed(() => store.state.token),
     });
 
     onMounted(async () => {
@@ -42,10 +41,10 @@ export default {
       state.loading = true;
       try {
         const res = await axios.get(
-          "api_dashboard/attachments/" + props.mid + "/month"
+          "api_dashboard/questions/" + props.eid + "/exam"
         );
         if (res.status == 200) {
-          state.attachments = res.data.data;
+          state.questions = res.data.data;
         } else {
           throw new Error(res.response.data.message);
         }

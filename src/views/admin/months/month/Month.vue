@@ -71,6 +71,12 @@
               :image="require('../../../../assets/images/exam.svg')"
               theme="light"
               style="cursor: pointer"
+              @click="
+                $router.push({
+                  name: 'monthExams',
+                  params: { yid: yid, sid: sid, mid: id },
+                })
+              "
             >
               <v-card-title style="font-weight: bold">الامتحانات</v-card-title>
             </v-card>
