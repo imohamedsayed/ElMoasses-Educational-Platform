@@ -192,7 +192,7 @@ export default {
             price: state.price,
             descrption: state.description,
             year_id: state.year,
-            status: Number(state.status),
+            status: Number(state.status).toString(),
           };
           const res = await axios.post("api_dashboard/products", data, {
             headers: {

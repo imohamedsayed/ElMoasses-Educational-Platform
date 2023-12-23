@@ -96,7 +96,7 @@ export default {
       },
       { key: "name", title: "الدرس" },
       { key: "url", title: "الرابط" },
-      // { key: "status", title: "مفعل ؟" },
+      { key: "status", title: "مفعل ؟" },
       { key: "actions" },
     ],
   }),

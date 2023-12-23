@@ -38,7 +38,7 @@ export default {
       state.loading = true;
 
       try {
-        const res = await axios.get("api_dashboard/products/4");
+        const res = await axios.get("api_dashboard/products");
         if (res.status == 200) {
           state.products = res.data.data;
         } else {

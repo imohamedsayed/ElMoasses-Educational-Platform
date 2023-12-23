@@ -123,7 +123,7 @@ export default {
       { key: "name", title: "شهر " },
       { key: "price", title: "السعر" },
       { key: "image", title: "صورة" },
-      // { key: "status", title: "الحالة" },
+      { key: "status", title: "الحالة" },
       { key: "actions", title: "" },
     ],
   }),

@@ -138,6 +138,7 @@ export default {
             price: state.price,
             image: state.image[0],
             semester_id: props.sid,
+            status: Number(state.status).toString(),
           };
 
           const res = await axios.post("api_dashboard/months", data, {
@@ -145,7 +146,7 @@ export default {
               "Content-Type": "multipart/form-data",
             },
           });
-
+          
           if (res.status == 200) {
             toast.success("تم اضافة الشهر بنجاح");
           } else {

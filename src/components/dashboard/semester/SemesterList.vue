@@ -97,6 +97,7 @@ export default {
         title: "ID",
       },
       { key: "name", title: "الترم الدراسي" },
+      { key: "status", title: "الحالة" },
       { key: "actions", title: "" },
     ],
   }),

@@ -107,6 +107,7 @@ export default {
             name: state.name,
             url: state.link,
             month_id: props.mid,
+            status: Number(state.status).toString(),
           };
 
           const res = await axios.post("api_dashboard/contents", data);

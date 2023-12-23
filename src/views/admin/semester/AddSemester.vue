@@ -8,7 +8,7 @@
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <form class="pa-10" @submit.prevent="add">
-          <v-row>
+          <v-row class="align-center">
             <v-col cols="12" md="6">
               <v-text-field
                 class="bg-white"
@@ -23,6 +23,15 @@
                 "
               >
               </v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <p class="text-weight-bold">الحالة:</p>
+              <v-switch
+                :label="state.status ? 'مفعل' : 'غير مفعل'"
+                true-icon="mdi-check"
+                color="success"
+                v-model="state.status"
+              ></v-switch>
             </v-col>
           </v-row>
           <div class="text-center">
@@ -60,6 +69,7 @@ export default {
     const state = reactive({
       semester: "",
       loading: false,
+      status: true,
       admin: computed(() => store.state.admin),
     });
 
@@ -81,8 +91,12 @@ export default {
         try {
           const res = await axios.post("api_dashboard/semesters", {
             name: state.semester,
+            status: Number(state.status).toString(),
             year_id: props.yid,
           });
+
+          console.log(res);
+
           if (res.status == 200) {
             toast.success("تم اضافة الترم الدراسي بنجاح");
           } else {

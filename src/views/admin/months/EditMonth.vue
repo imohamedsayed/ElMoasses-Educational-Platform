@@ -127,6 +127,7 @@ export default {
           state.name = month.name;
           state.price = month.price;
           state.storedImage = month.image;
+          state.status = month.status == "On";
         } else {
           throw new Error(res.response.data.message);
         }
@@ -152,7 +153,7 @@ export default {
             name: state.name,
             price: state.price,
             image: state.image[0] || null,
-            status: Number(state.status),
+            status: Number(state.status).toString(),
           };
           console.log(props.id);
           const res = await axios.post(

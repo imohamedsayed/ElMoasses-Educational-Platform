@@ -169,14 +169,14 @@ export default {
       state.loading = true;
 
       try {
-        const res = await axios.get("api_dashboard/products/4");
+        const res = await axios.get("api_dashboard/products/" + props.id);
         if (res.status == 200) {
-          const product = res.data.data[0];
+          const product = res.data.data;
           state.storedImage = product.image;
           state.description = product.descrption;
           state.price = product.price;
           state.year = product.yearId;
-          state.status = Boolean(Number(product.status));
+          state.status = product.status == "On";
         } else {
           throw new Error(res.response.data.message);
         }

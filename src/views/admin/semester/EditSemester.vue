@@ -83,6 +83,7 @@ export default {
         const res = await axios.get("api_dashboard/semesters/" + props.id);
         if (res.status == 200) {
           state.semester = res.data.data.name;
+          state.status = res.data.data.status == "On";
         } else {
           throw new Error(res.response.data.message);
         }

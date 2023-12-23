@@ -95,6 +95,7 @@ export default {
           const content = res.data.data;
           state.name = content.name;
           state.link = content.url;
+          state.status = content.status == "On";
         } else {
           throw new Error(res.response.data.message);
         }
@@ -120,7 +121,7 @@ export default {
           const data = {
             name: state.name,
             url: state.link,
-            status: Number(state.status),
+            status: Number(state.status).toString(),
           };
 
           const res = await axios.post(

@@ -146,7 +146,7 @@ export default {
             description: state.description,
             start_at: state.start_at.replace("T", " "),
             end_at: state.end_at.replace("T", " "),
-            status: Number(state.status),
+            status: Number(state.status).toString(),
             month_id: props.mid,
           };
           const res = await axios.post("api_dashboard/exams", data);
