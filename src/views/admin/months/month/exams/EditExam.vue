@@ -171,7 +171,7 @@ export default {
             description: state.description,
             start_at,
             end_at,
-            status: state.status,
+            status: Number(state.status),
           };
           const res = await axios.post("api_dashboard/exams/" + props.id, data);
           if (res.status == 202) {

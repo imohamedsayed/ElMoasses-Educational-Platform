@@ -152,6 +152,7 @@ export default {
             name: state.name,
             price: state.price,
             image: state.image[0] || null,
+            status: Number(state.status),
           };
           console.log(props.id);
           const res = await axios.post(

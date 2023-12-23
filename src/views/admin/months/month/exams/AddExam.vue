@@ -146,7 +146,7 @@ export default {
             description: state.description,
             start_at: state.start_at.replace("T", " "),
             end_at: state.end_at.replace("T", " "),
-            status: state.status,
+            status: Number(state.status),
             month_id: props.mid,
           };
           const res = await axios.post("api_dashboard/exams", data);
@@ -168,7 +168,6 @@ export default {
         });
       }
     };
-
 
     return { state, add, v$ };
   },

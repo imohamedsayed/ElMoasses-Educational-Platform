@@ -8,21 +8,21 @@
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <form class="pa-10" @submit.prevent="add">
-          <v-row>
+          <v-row class="align-center">
             <v-col cols="12" md="6">
-              <v-text-field
+              <v-file-input
                 class="bg-white"
-                label="اسم الملزمة"
+                label="المنتج"
                 variant="outlined"
-                prepend-inner-icon="mdi-file-document-outline"
+                prepend-inner-icon="mdi-file-upload-outline"
                 color="teal-darken-1"
-                hint="مثال: المراجعة النهائية للهندسة الفراغية"
+                hint=" مثال: المراجعة النهائية للهندسة الفراغية شاملة للاختبارات والحلول النموذجية"
                 v-model="state.name"
                 :error-messages="
                   v$.name.$error ? v$.name.$errors[0].$message : ''
                 "
               >
-              </v-text-field>
+              </v-file-input>
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
@@ -33,23 +33,13 @@
                 color="teal-darken-1"
                 hint=" مثال: المراجعة النهائية للهندسة الفراغية شاملة للاختبارات والحلول النموذجية"
                 v-model="state.description"
-              >
-              </v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-file-input
-                class="bg-white"
-                label="المنتج"
-                variant="outlined"
-                prepend-inner-icon="mdi-file-upload-outline"
-                color="teal-darken-1"
-                hint=" مثال: المراجعة النهائية للهندسة الفراغية شاملة للاختبارات والحلول النموذجية"
-                v-model="state.file"
                 :error-messages="
-                  v$.file.$error ? v$.file.$errors[0].$message : ''
+                  v$.description.$error
+                    ? v$.description.$errors[0].$message
+                    : ''
                 "
               >
-              </v-file-input>
+              </v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
@@ -97,6 +87,8 @@
                 prepend-inner-icon="mdi-calendar"
                 color="teal-darken-1"
                 v-model="state.year"
+                item-title="name"
+                item-value="id"
                 :error-messages="
                   v$.year.$error ? v$.year.$errors[0].$message : ''
                 "
@@ -132,14 +124,19 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
-
+import { required, numeric } from "@vuelidate/validators";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 export default {
   components: { DashLayout },
   setup() {
+    const store = useStore(),
+      router = useRouter();
+
     const state = reactive({
       name: "",
       loading: false,
@@ -147,23 +144,39 @@ export default {
       status: false,
       image: "",
       description: "",
-      file: "",
       year: "",
-      years: [
-        { title: "الصف الاول الثانوي", value: 0 },
-        { title: "الصف الثاني الثانوي", value: 1 },
-        { title: "الصف الثالث الثانوي", value: 2 },
-      ],
+      years: [],
+      admin: computed(() => store.state.admin),
+    });
+
+    onMounted(async () => {
+      if (!state.admin) router.push({ name: "adminLogin" });
+
+      state.loading = true;
+
+      try {
+        const res = await axios.get("api_dashboard/years");
+
+        if (res.status == 200) {
+          state.years = res.data.data;
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+
+      state.loading = false;
     });
 
     const rules = computed(() => {
       return {
         name: { required },
-        price: { required },
+        price: { required, numeric },
+        description: { required },
         status: { required },
         image: { required },
         year: { required },
-        file: { required },
       };
     });
     const v$ = useVuelidate(rules, state);
@@ -173,24 +186,33 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          // let data = {
-          //   email: state.email,
-          //   password: state.password,
-          // };
-          // await store.dispatch("customerLogin", data);
-          toast.success("Login Successfully", {
-            autoClose: 1000,
+          const data = {
+            name: state.name[0],
+            image: state.image[0],
+            price: state.price,
+            descrption: state.description,
+            year_id: state.year,
+            status: Number(state.status),
+          };
+          const res = await axios.post("api_dashboard/products", data, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           });
-          // router.push("/home");
+
+          if (res.status == 201) {
+            toast.success("تم اضافة المنتج بنجاح");
+          } else {
+            throw new Error(res.response.data.message);
+          }
         } catch (err) {
-          toast.error(err, {
+          toast.error(err.message, {
             autoClose: 1000,
           });
         }
-
         state.loading = false;
       } else {
-        toast.error("ادخل الصف الدراسي", {
+        toast.error("ادخل بيانات المنتج بشكل كامل وصحيح", {
           autoClose: 1000,
         });
       }

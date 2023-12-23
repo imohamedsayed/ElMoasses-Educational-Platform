@@ -3,12 +3,12 @@
     <v-container>
       <v-card class="mt-10 dash-card pa-4" :loading="state.loading">
         <h2>
-          <v-icon class="ml-2">mdi-plus-circle</v-icon>
-          اضافة سنة دراسية جديدة
+          <v-icon class="ml-2">mdi-pencil</v-icon>
+          تعديل الترم الدراسي
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <form class="pa-10" @submit.prevent="edit">
-          <v-row>
+          <v-row class="align-center">
             <v-col cols="12" md="6">
               <v-text-field
                 class="bg-white"
@@ -23,6 +23,18 @@
                 "
               >
               </v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <p class="text-weight-bold">الحالة:</p>
+              <v-switch
+                :label="state.status ? 'مفعل' : 'غير مفعل'"
+                true-icon="mdi-check"
+                color="success"
+                v-model="state.status"
+                :error-messages="
+                  v$.status.$error ? v$.status.$errors[0].$message : ''
+                "
+              ></v-switch>
             </v-col>
           </v-row>
           <div class="text-center">
@@ -58,6 +70,7 @@ export default {
     const router = useRouter();
     const state = reactive({
       semester: "",
+      status: true,
       loading: false,
       admin: computed(() => store.state.admin),
     });
@@ -68,7 +81,6 @@ export default {
 
       try {
         const res = await axios.get("api_dashboard/semesters/" + props.id);
-
         if (res.status == 200) {
           state.semester = res.data.data.name;
         } else {
@@ -84,6 +96,7 @@ export default {
     const rules = computed(() => {
       return {
         semester: { required },
+        status: { required },
       };
     });
     const v$ = useVuelidate(rules, state);
@@ -93,9 +106,16 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          const res = await axios.post("api_dashboard/semesters/" + props.id, {
+          const data = {
             name: state.semester,
-          });
+            status: Number(state.status).toString(),
+          };
+          console.log(data);
+          const res = await axios.post(
+            "api_dashboard/semesters/" + props.id,
+            data
+          );
+          console.log(res);
           if (res.status == 200) {
             toast.success("تم تعديل الترم بنجاح");
           } else {

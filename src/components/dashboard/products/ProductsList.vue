@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <v-card flat>
+    <v-card flat :loading="loading">
       <template v-slot:text>
         <v-text-field
           v-model="search"
@@ -19,7 +19,7 @@
       </div>
       <v-data-table
         :headers="headers"
-        :items="years"
+        :items="products"
         :search="search"
         hover
         class="table"
@@ -27,7 +27,7 @@
         <template v-slot:item.image="{ item }">
           <v-card class="my-2" elevation="2" rounded>
             <v-img
-              :src="`https://cdn.vuetifyjs.com/docs/images/graphics/gpus/${item.image}`"
+              :src="`http://localhost:8000/${item.image}`"
               height="64"
               cover
             ></v-img>
@@ -35,7 +35,11 @@
         </template>
         <template v-slot:item.actions="{ item }">
           <div class="text-end">
-            <v-btn color="red" class="ml-4 mb-2" size="small"
+            <v-btn
+              color="red"
+              class="ml-4 mb-2"
+              size="small"
+              @click="deleteProduct(item.id)"
               ><v-icon>mdi-delete</v-icon>
               <v-tooltip activator="parent" location="top">حذف</v-tooltip>
             </v-btn>
@@ -54,40 +58,84 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-dialog
+      v-model="dialog"
+      width="500"
+      transition="dialog-top-transition"
+      persistent
+    >
+      <v-card class="pa-4" :loading="loading">
+        <v-card-title> هل تريد فعلا حذف المنتج؟ </v-card-title>
+        <v-card-text> بمجرد تأكيد للأمر لن يمكنك التراجع عن ذلك </v-card-text>
+        <v-card-actions class="mt-5 text-center">
+          <v-btn @click="dialog = false" color="green">
+            <v-icon>mdi-close</v-icon> الغاء الامر
+          </v-btn>
+          <v-btn
+            @click="confirmDeleteProduct"
+            color="red"
+            class="mr-5"
+            :loading="loading"
+          >
+            <v-icon>mdi-check</v-icon> تأكيد الامر
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import { toast } from "vue3-toastify";
+
 export default {
+  props: ["products"],
   data: () => ({
-    years: [],
     search: "",
+    id: "",
+    loading: false,
+    dialog: false,
     headers: [
       {
         key: "id",
         title: "ID",
       },
       { key: "image", title: "صورة" },
-      { key: "name", title: "شهر " },
-      { key: "description", title: "السعر" },
-      { key: "year", title: "السعر" },
+      { key: "name", title: "الاسم " },
+      { key: "descrption", title: "الوصف" },
       { key: "price", title: "السعر" },
+      { key: "yearName", title: "السنة الدراسية" },
       { key: "status", title: "الحالة" },
       { key: "actions", title: "" },
     ],
   }),
-  async mounted() {
-    this.years = [
-      {
-        id: 1,
-        name: "هندسة ",
-        description: "تمارين وشرع الهندسة الفراغيى ",
-        year: "اولي ثانوي ",
-        price: 100,
-        image: "3.png",
-        status: false,
-      },
-    ];
+  methods: {
+    async deleteProduct(id) {
+      this.dialog = true;
+      this.id = id;
+    },
+    async confirmDeleteProduct() {
+      this.loading = true;
+      try {
+        const res = await axios.delete("api_dashboard/products/" + this.id);
+        console.log(res);
+        if (res.status == 204) {
+          toast.success("تم حذف المنتج بنجاح", { autoClose: 1000 });
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        } else {
+          throw new Error(
+            res.response?.data?.message || "حدث خطأ ما, عاود المحاولة لاحقا"
+          );
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+      this.loading = false;
+    },
   },
 };
 </script>

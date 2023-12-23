@@ -120,6 +120,7 @@ export default {
           const data = {
             name: state.name,
             url: state.link,
+            status: Number(state.status),
           };
 
           const res = await axios.post(

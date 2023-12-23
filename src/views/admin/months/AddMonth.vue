@@ -8,7 +8,7 @@
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <form class="pa-10" @submit.prevent="add">
-          <v-row>
+          <v-row class="align-center">
             <v-col cols="12" md="6">
               <v-text-field
                 class="bg-white"
