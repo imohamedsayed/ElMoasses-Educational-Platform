@@ -1,5 +1,11 @@
 <template>
   <section class="first-year">
+    <v-img
+      :src="require('@/assets/images/liquid.png')"
+      alt=""
+      class="img"
+    ></v-img>
+
     <v-container>
       <h2>
         أحدث شهور
@@ -64,12 +70,22 @@ export default {};
 
 <style lang="scss" scoped>
 .first-year {
+  position: relative;
   margin-top: 200px;
   h2 {
     font-size: 1.9rem;
+    z-index: 900;
   }
   .row {
     margin-top: 100px;
+  }
+  .img {
+    position: absolute;
+    width: 800px;
+    left: 100px;
+    top: -250px;
+    opacity: 0.3;
+    z-index: -1;
   }
 }
 </style>

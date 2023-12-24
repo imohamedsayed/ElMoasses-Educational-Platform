@@ -1,5 +1,7 @@
 <template>
   <section class="first-year">
+    <v-img :src="require('@/assets/images/5.svg')" alt="" class="img"></v-img>
+
     <v-container>
       <h2>
         أحدث شهور
@@ -13,7 +15,7 @@
             class="mx-auto"
             max-width="400"
             v-motion
-            :initial="{ opacity: 0, y: 200 }"
+            :initial="{ opacity: 0, y: -200 }"
             :visibleOnce="{ opacity: 1, y: 0 }"
             :delay="200 * num"
           >
@@ -64,12 +66,22 @@ export default {};
 
 <style lang="scss" scoped>
 .first-year {
+  position: relative;
   margin-top: 200px;
   h2 {
     font-size: 1.9rem;
+    z-index: 900;
   }
   .row {
     margin-top: 100px;
+  }
+  .img {
+    position: absolute;
+    width: 500px;
+    left: 100px;
+    top: -150px;
+    opacity: 0.3;
+    z-index: -1;
   }
 }
 </style>

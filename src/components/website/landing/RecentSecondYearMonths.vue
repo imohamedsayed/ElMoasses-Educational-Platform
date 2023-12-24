@@ -1,24 +1,24 @@
 <template>
   <section class="first-year">
+    <v-img :src="require('@/assets/images/3.svg')" alt="" class="img"></v-img>
+
     <v-container>
       <h2>
         أحدث شهور
         <span style="color: var(--caribian-green)">الصف الثاني الثانوي</span>
       </h2>
       <v-divider width="500" class="mt-2"></v-divider>
+
       <v-row class="row">
-        <v-col
-          cols="12"
-          md="6"
-          lg="3"
-          v-for="num in 4"
-          :key="num"
-          v-motion
-          :initial="{ opacity: 0, x: 200 }"
-          :visibleOnce="{ opacity: 1, x: 0 }"
-          :delay="200 * num"
-        >
-          <v-card class="mx-auto" max-width="400">
+        <v-col cols="12" md="6" lg="3" v-for="num in 4" :key="num">
+          <v-card
+            class="mx-auto"
+            max-width="400"
+            v-motion
+            :initial="{ opacity: 0, y: -200 }"
+            :visibleOnce="{ opacity: 1, y: 0 }"
+            :delay="200 * num"
+          >
             <v-img
               class="align-end text-white"
               height="200"
@@ -32,6 +32,7 @@
 
             <v-card-text>
               <div>مادة الاستاتيكا</div>
+
               <div
                 class="w-25 mt-5 pa-2 text-center"
                 style="
@@ -65,12 +66,23 @@ export default {};
 
 <style lang="scss" scoped>
 .first-year {
+  position: relative;
   margin-top: 200px;
   h2 {
     font-size: 1.9rem;
+    z-index: 900;
   }
   .row {
     margin-top: 100px;
+  }
+  .img {
+    position: absolute;
+    width: 500px;
+    right: 40%;
+    transform: translateX(-50);
+    top: -150px;
+    opacity: 0.7;
+    z-index: -1;
   }
 }
 </style>
