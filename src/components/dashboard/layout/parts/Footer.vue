@@ -23,7 +23,7 @@
         <v-row>
           <v-col cols="12" md="6" v-motion-slide-right>
             <v-card elevation="0">
-              <v-img width="200" src="@/assets/images/logo.png"> </v-img>
+              <v-img  width="300" class="my-10" src="@/assets/images/logo.png"> </v-img>
               <v-card-text class="text-start">
                 المؤسس للرياضيات مع مستر محمد سليمان نظام متابعه متكامل لشرح
                 وتبسيط ماده الرياضيات للمرحله الثانوية لا تيأس فالطريق طويل

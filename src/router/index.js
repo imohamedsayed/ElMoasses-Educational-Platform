@@ -9,6 +9,7 @@ import Profile from "../views/website/Profile.vue";
 import Settings from "../views/website/Settings.vue";
 import Store from "../views/website/Store.vue";
 import ResetPassword from "../views/auth/ResetPassword.vue";
+import Subscribe from "../views/website/Subscribe.vue";
 // Dashboard Routes
 
 import AdminLogin from "../views/auth/AdminLogin.vue";
@@ -49,6 +50,8 @@ import TF from "../views/admin/months/month/exams/question/options/TF.vue";
 import Products from "../views/admin/products/Products.vue";
 import EditProduct from "../views/admin/products/EditProduct.vue";
 import AddProduct from "../views/admin/products/AddProduct.vue";
+
+import NotFound from "../views/NotFound.vue";
 
 const routes = [
   {
@@ -399,6 +402,14 @@ const routes = [
     props: true,
     meta: {
       title: "تعديل المنتج",
+    },
+  },
+  {
+    path: "/:catchAll(.*)",
+    name: "NotFound",
+    component: NotFound,
+    meta: {
+      title: "الصفحة غير موجودة",
     },
   },
 ];

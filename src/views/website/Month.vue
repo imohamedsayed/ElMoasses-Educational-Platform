@@ -36,7 +36,7 @@ export default {
       {
         title: "الرئيسية",
         disabled: false,
-        href: "/landing",
+        href: "/",
       },
       {
         title: "الصفوف الدراسية",

@@ -2,7 +2,7 @@
   <v-app-bar id="appBar" elevation="0" class="px-2">
     <v-app-bar-nav-icon @click="openAppDrawer"></v-app-bar-nav-icon>
     <v-app-bar-title
-      ><v-img src="@/assets/images/logo.png" width="60"></v-img
+      ><v-img src="@/assets/images/logo.png" width="100"></v-img
     ></v-app-bar-title>
     <v-btn
       color="red"

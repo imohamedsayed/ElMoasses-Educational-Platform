@@ -9,7 +9,7 @@
           </template>
         </v-breadcrumbs>
       </v-sheet>
-      <v-row class="home-content ga-5">
+      <v-row class="home-content ga-5 mb-16">
         <v-col cols="12" lg="3">
           <v-tabs
             v-model="tab"
@@ -18,67 +18,67 @@
             class="content-nav"
           >
             <h3>الصفوف الدراسية</h3>
-            <v-list>
-              <v-list-group>
+            <v-list v-if="!loading">
+              <v-list-group v-for="year in years" :key="year.id">
                 <template v-slot:activator="{ props }">
                   <v-list-item
-                    prepend-icon="mdi-login"
-                    title="الصف الأول الثانوي"
+                    prepend-icon="mdi-folder-outline"
+                    :title="year.name"
                     value="form"
                     v-bind="props"
                   ></v-list-item>
                 </template>
-                <v-list-item>
-                  <v-tab value="option-1">
-                    <v-icon start> mdi-account </v-icon>
-                    الترم الأول
-                  </v-tab>
-                </v-list-item>
-                <v-list-item>
-                  <v-tab value="option-2">
-                    <v-icon start> mdi-lock </v-icon>
-                    الترم الثاني
-                  </v-tab>
-                </v-list-item>
+                <Semesters :id="year.id" />
               </v-list-group>
-              <v-list-group>
-                <template v-slot:activator="{ props }">
-                  <v-list-item
-                    prepend-icon="mdi-login"
-                    title="الصف الثاني الثانوي"
-                    value="form"
-                    v-bind="props"
-                  ></v-list-item>
-                </template>
-                <v-list-item>
-                  <v-tab value="option-3">
-                    <v-icon start> mdi-account </v-icon>
-                    الترم الأول
-                  </v-tab>
-                </v-list-item>
-              </v-list-group>
+              
+            </v-list>
+            <v-list v-else>
+              <v-skeleton-loader :loading="loading" type="list-item-two-line">
+                <v-list-item title="Title"></v-list-item>
+              </v-skeleton-loader>
+              <v-skeleton-loader :loading="loading" type="list-item-two-line">
+                <v-list-item title="Title"></v-list-item>
+              </v-skeleton-loader>
+              <v-skeleton-loader :loading="loading" type="list-item-two-line">
+                <v-list-item title="Title"></v-list-item>
+              </v-skeleton-loader>
             </v-list>
           </v-tabs>
         </v-col>
         <v-col>
-          <v-window v-model="tab" class="lec">
-            <h3 class="mb-10">المحتوى الدراسي</h3>
-            <v-window-item value="option-1">
-              <v-card flat v-if="tab == 'option-1'">
-                <MonthsList />
-              </v-card>
-            </v-window-item>
-            <v-window-item value="option-2">
-              <v-card flat v-if="tab == 'option-2'">
-                <MonthsList />
-              </v-card>
-            </v-window-item>
-            <v-window-item value="option-3">
-              <v-card flat v-if="tab == 'option-3'">
-                <MonthsList />
+          <h3 class="mb-10">المحتوى الدراسي</h3>
+          <v-window
+            v-model="tab"
+            class="lec"
+            v-if="state.semesters.length && !loading"
+          >
+            <v-window-item
+              v-for="semester in state.semesters"
+              :key="semester.id"
+              :value="semester.id"
+            >
+              <v-card flat v-if="tab == semester.id">
+                <MonthsList :semester="semester.id" />
               </v-card>
             </v-window-item>
           </v-window>
+          <div class="text-center" v-else-if="!loading">
+            <v-img
+              :src="require('@/assets/images/4.svg')"
+              width="600"
+              class="mx-auto"
+            ></v-img>
+            <h2 class="mt-8">لم يتم اضافة محتوي بعد</h2>
+          </div>
+          <div class="text-center" v-else>
+            <v-progress-circular
+              :width="5"
+              color="green"
+              size="200"
+              indeterminate
+            ></v-progress-circular>
+            <h2 class="mt-8 text-grey">تحميل المحتوي ...</h2>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -87,15 +87,21 @@
 
 <script>
 import AppLayout from "@/components/website/AppLayout.vue";
+import axios from "axios";
+import { onMounted, computed } from "vue";
+import { ref } from "vue";
+import Semesters from "@/components/website/home/Semesters.vue";
 import MonthsList from "@/components/website/Month/MonthsList.vue";
+import { useStore } from "vuex";
+import { reactive } from "vue";
 export default {
-  components: { AppLayout, MonthsList },
+  components: { AppLayout, Semesters, MonthsList },
   data: () => ({
     items: [
       {
         title: "الرئيسية",
         disabled: false,
-        href: "/landing",
+        href: "/",
       },
       {
         title: "الصفوف الدراسية",
@@ -103,8 +109,34 @@ export default {
         href: "/home",
       },
     ],
-    tab: "option-1",
   }),
+  setup() {
+    let years = ref([]);
+    let loading = ref(false);
+    const store = useStore();
+    const tab = ref(0);
+    const state = reactive({
+      semesters: computed(() => store.state.semesters),
+    });
+
+    onMounted(async () => {
+      loading.value = true;
+      try {
+        const res = await axios.get("api/get-all-active-years");
+        if (res.status == 200) {
+          years.value = res.data.Year;
+          store.dispatch("clearSemesters");
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        console.log("Error while fetching years: " + error);
+      }
+      loading.value = false;
+    });
+    tab.value = state.semesters[0]?.id ||1;
+    return { years, loading, state, tab };
+  },
 };
 </script>
 
@@ -130,13 +162,10 @@ export default {
     padding: 10px;
   }
 }
-
-.lec {
-  h3 {
-    text-align: center;
-    background: var(--caribian-green);
-    color: var(--seashell);
-    padding: 10px;
-  }
+h3 {
+  text-align: center;
+  background: var(--caribian-green);
+  color: var(--seashell);
+  padding: 10px;
 }
 </style>

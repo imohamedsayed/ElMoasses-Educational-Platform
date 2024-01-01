@@ -75,11 +75,6 @@
                   prepend-inner-icon="mdi-phone"
                   :counter="11"
                   v-model="state.fatherPhone"
-                  :error-messages="
-                    v$.fatherPhone.$error
-                      ? v$.fatherPhone.$errors[0].$message
-                      : ''
-                  "
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="6" class="mb-5">
@@ -89,11 +84,6 @@
                   prepend-inner-icon="mdi-phone"
                   :counter="11"
                   v-model="state.motherPhone"
-                  :error-messages="
-                    v$.motherPhone.$error
-                      ? v$.motherPhone.$errors[0].$message
-                      : ''
-                  "
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="6" class="mb-5">
@@ -283,7 +273,7 @@ export default {
         {
           title: "الرئيسية",
           disabled: false,
-          href: "/landing",
+          href: "/",
         },
         {
           title: "حسابي",
@@ -322,8 +312,6 @@ export default {
         lastName: { required },
         nationalId: { required, minLength: minLength(14) },
         phone: { required, minLength: minLength(11) },
-        fatherPhone: { required, minLength: minLength(11) },
-        motherPhone: { required, minLength: minLength(11) },
         level: { required },
       };
     });
@@ -352,11 +340,11 @@ export default {
             f_name: state.firstName,
             l_name: state.lastName,
             phone_number: state.phone,
-            father_phone: state.fatherPhone,
-            mother_phone: state.motherPhone,
             national_id_card: state.nationalId,
             acedemic_year: state.level,
           };
+          if (state.fatherPhone) data.father_phone = state.fatherPhone;
+          if (state.motherPhone) data.mother_phone = state.motherPhone;
 
           await store.dispatch("studentUpdate", data);
 

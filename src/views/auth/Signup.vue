@@ -86,9 +86,6 @@
             color="green-lighten-1"
             class="mb-4"
             v-model="state.fatherPhone"
-            :error-messages="
-              v$.fatherPhone.$error ? v$.fatherPhone.$errors[0].$message : ''
-            "
           ></v-text-field>
           <v-text-field
             :counter="11"
@@ -97,9 +94,6 @@
             color="green-lighten-1"
             class="mb-4"
             v-model="state.motherPhone"
-            :error-messages="
-              v$.motherPhone.$error ? v$.motherPhone.$errors[0].$message : ''
-            "
           ></v-text-field>
           <v-text-field
             :counter="14"
@@ -156,6 +150,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, sameAs } from "@vuelidate/validators";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import axios from "axios";
 export default {
   components: { AppLayout },
   setup() {
@@ -193,7 +188,7 @@ export default {
       ],
     });
 
-    onMounted(() => {
+    onMounted(async () => {
       if (state.student) {
         router.push({ name: "home" });
       }
@@ -207,8 +202,6 @@ export default {
         password: { required, minLength: minLength(6) },
         passwordConfirmation: { required, sameAs: sameAs(state.password) },
         phone: { required, minLength: minLength(11) },
-        fatherPhone: { required, minLength: minLength(11) },
-        motherPhone: { required, minLength: minLength(11) },
         level: { required },
       };
     });
@@ -226,10 +219,12 @@ export default {
             password: state.password,
             passwordConfirmation: state.passwordConfirmation,
             phone: state.phone,
-            fatherPhone: state.fatherPhone,
-            motherPhone: state.motherPhone,
             year: state.level,
           };
+
+          if (state.fatherPhone) data.fatherPhone = state.fatherPhone;
+          if (state.motherPhone) data.motherPhone = state.motherPhone;
+
           await store.dispatch("studentRegister", data);
 
           toast.success("تم انشاء حسابك بنجاح", {

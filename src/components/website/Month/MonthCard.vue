@@ -1,36 +1,21 @@
 <template>
-  <v-card
-    class="mx-auto"
-    max-width="400"
-    v-motion
-  
-  >
+  <v-card class="mx-auto" max-width="400" v-motion>
     <v-img
       class="align-end text-white"
       height="300"
-      src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+      :src="'http://localhost:8000/' + month.image"
       cover
     >
-      <v-card-title>محتوي شهر ديسمبر</v-card-title>
     </v-img>
 
-    <v-card-subtitle class="pt-4"> استاتيكا -</v-card-subtitle>
+    <v-card-subtitle class="pt-4">{{ month.created_at }}</v-card-subtitle>
 
-    <v-card-text>
-      <div>مادة الاستاتيكا</div>
-
-      <div
-        class="w-25 mt-5 pa-2 text-center"
-        style="
-          border-radius: 20px;
-          background: var(--seashell);
-          color: var(--black-color);
-          opacity: 0.6;
-        "
-      >
-        150 جنيه
+    <v-card-title>
+      <div style="font-size: 1.1rem; font-weight: bold">
+        {{ month.name }} - {{ month.semester_name }}
       </div>
-    </v-card-text>
+      <v-chip class="mt-7" color="green"> {{ month.price }} جنيه </v-chip>
+    </v-card-title>
 
     <v-card-actions>
       <v-btn color="#01cda9" class="text-white" variant="flat"> الاشتراك</v-btn>
@@ -41,7 +26,15 @@
 </template>
 
 <script>
-export default {};
+import { onMounted } from "vue";
+
+export default {
+  props: ["month"],
+  setup(props) {
+    onMounted(() => {
+    });
+  },
+};
 </script>
 
 <style></style>

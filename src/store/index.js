@@ -6,6 +6,7 @@ const state = {
   student: null,
   admin: null,
   token: null,
+  semesters: [],
 };
 const getters = {};
 
@@ -23,6 +24,12 @@ const mutations = {
     state.student = null;
     state.admin = null;
     state.token = null;
+  },
+  setSemesters(state, semesters) {
+    state.semesters.push(...semesters);
+  },
+  clearSemester(state) {
+    state.semesters = [];
   },
 };
 const actions = {
@@ -66,7 +73,7 @@ const actions = {
       } else {
         const token = res.data.student.original.access_token;
         const expiresIn = res.data.student.original.expires_in;
-        const student = res.data.student.original.user;
+        const student = res.data.student.original.Student;
         axios.defaults.headers.common["Authorization"] = "Bearer " + token;
         context.commit("setToken", token);
         context.commit("setStudent", student);
@@ -87,8 +94,7 @@ const actions = {
         }
 
         const token = res.data.access_token;
-        const expiresIn = res.data.expires_in;
-        const student = res.data.user;
+        const student = res.data.Student;
 
         axios.defaults.headers.common["Authorization"] = "Bearer " + token;
         context.commit("setToken", token);
@@ -106,15 +112,15 @@ const actions = {
     try {
       const res = await axios.post("api/students", data);
 
-      if (res.status === 200) {
-        const studentRefresh = await axios.get("students-refresh");
+      if (res.status == 200) {
+        const studentRefresh = await axios.get("api/students-refresh");
 
-        const { user, access_token, expires_in } = studentRefresh.data;
+        const { Student, access_token, expires_in } = studentRefresh.data;
 
         axios.defaults.headers.common["Authorization"] =
           "Bearer " + access_token;
         context.commit("setToken", access_token);
-        context.commit("setStudent", user);
+        context.commit("setStudent", Student);
       } else {
         throw new Error(res.response.data.message);
       }
@@ -169,6 +175,12 @@ const actions = {
   removeStudent(context) {
     context.commit("logout");
   },
+  clearSemesters(context) {
+    context.commit("clearSemester");
+  },
+  setSemesters(context, { semesters }) {
+    context.commit("setSemesters", semesters);
+  },
 };
 
 export default createStore({
@@ -177,6 +189,7 @@ export default createStore({
   mutations,
   actions,
   modules: {},
+
   plugins: [
     createPersistedState({
       getState: (key) => cookies.getJSON(key),

@@ -2,9 +2,12 @@
   <AppLayout>
     <Intro />
     <Services />
-    <RecentFirstYearMonths />
-    <RecentSecondYearMonths />
-    <RecentThirdYearMonths />
+
+    <div v-if="years.length">
+      <RecentFirstYearMonths :year="years[0]" v-if="years[0]" />
+      <RecentSecondYearMonths :year="years[1]" v-if="years[1]"/>
+      <RecentThirdYearMonths :year="years[2]" v-if="years[2]"/>
+    </div>
   </AppLayout>
 </template>
 
@@ -14,8 +17,10 @@ import Services from "@/components/website/landing/Services.vue";
 import RecentFirstYearMonths from "@/components/website/landing/RecentFirstYearMonths.vue";
 import RecentSecondYearMonths from "@/components/website/landing/RecentSecondYearMonths.vue";
 import RecentThirdYearMonths from "@/components/website/landing/RecentThirdYearMonths.vue";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import AppLayout from "../components/website/AppLayout.vue";
+import { onMounted } from "vue";
+import axios from "axios";
 export default defineComponent({
   name: "HomeView",
   components: {
@@ -25,6 +30,24 @@ export default defineComponent({
     RecentFirstYearMonths,
     RecentSecondYearMonths,
     RecentThirdYearMonths,
+  },
+  setup() {
+    const years = ref([]);
+
+    onMounted(async () => {
+      try {
+        const res = await axios.get("api/get-last-three-years");
+        if (res.status == 200) {
+          years.value = res.data.lastThreeYear;
+        } else {
+          throw new Error(res.response.data.message);
+        }
+      } catch (error) {
+        console.log("Error fetching data: ", error.message);
+      }
+    });
+
+    return { years };
   },
 });
 </script>

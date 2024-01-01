@@ -63,21 +63,7 @@
         :to="{ name: 'store' }"
       ></v-list-item>
 
-      <v-list-group>
-        <template v-slot:activator="{ props }">
-          <v-list-item
-            prepend-icon="mdi-login"
-            title="Forms"
-            value="form"
-            v-bind="props"
-          ></v-list-item>
-        </template>
-        <v-list-item
-          prepend-icon="mdi-email"
-          title="Examples"
-          value="ex1"
-        ></v-list-item>
-      </v-list-group>
+    
 
       <v-divider></v-divider>
 
