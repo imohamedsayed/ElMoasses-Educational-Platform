@@ -18,9 +18,25 @@
     </v-card-title>
 
     <v-card-actions>
-      <v-btn color="#01cda9" class="text-white" variant="flat"> الاشتراك</v-btn>
+      <v-btn
+        color="#01cda9"
+        class="text-white"
+        variant="flat"
+        @click="
+          $router.push({ name: 'monthSubscription', params: { id: month.id } })
+        "
+      >
+        الاشتراك</v-btn
+      >
 
-      <v-btn color="#01cda9"> مشاهدة المحتوي </v-btn>
+      <v-btn
+        color="#01cda9"
+        @click="
+          $router.push({ name: 'month', params: { id: month.id } })
+        "
+      >
+        مشاهدة المحتوي
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -31,8 +47,7 @@ import { onMounted } from "vue";
 export default {
   props: ["month"],
   setup(props) {
-    onMounted(() => {
-    });
+    onMounted(() => {});
   },
 };
 </script>

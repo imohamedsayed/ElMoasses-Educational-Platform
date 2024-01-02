@@ -10,6 +10,7 @@ import Settings from "../views/website/Settings.vue";
 import Store from "../views/website/Store.vue";
 import ResetPassword from "../views/auth/ResetPassword.vue";
 import Subscribe from "../views/website/Subscribe.vue";
+import Exam from "../views/website/Exam.vue";
 // Dashboard Routes
 
 import AdminLogin from "../views/auth/AdminLogin.vue";
@@ -98,14 +99,25 @@ const routes = [
     path: "/month/:id",
     name: "month",
     component: Month,
+    props: true,
     meta: {
       title: "محتوى الشهر",
     },
   },
   {
-    path: "/month/:m/lecture/:id",
+    path: "/month/:id/subscribe",
+    name: "monthSubscription",
+    component: Subscribe,
+    props: true,
+    meta: {
+      title: "الاشتراك",
+    },
+  },
+  {
+    path: "/month/:mid/lecture/:id",
     name: "lecture",
     component: Lecture,
+    props: true,
     meta: {
       title: "المحاضرة",
     },
@@ -134,7 +146,15 @@ const routes = [
       title: "المتجر",
     },
   },
-
+  {
+    path: "/month/:mid/exam/:id",
+    name: "exam",
+    props: true,
+    component: Exam,
+    meta: {
+      title: "الامتحان",
+    },
+  },
   /*
     -->> Dashboard Routes
   */

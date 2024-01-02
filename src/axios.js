@@ -10,10 +10,18 @@ let x = false;
 axios.interceptors.response.use(
   (resp) => resp,
   async (error) => {
-    if (error.response.status === 401 && !x) {
-      x = true;
-      await store.dispatch("logout");
+    if (
+      error.response.data?.message?.includes("Month") ||
+      error.response.data?.message?.includes("exam") ||
+      error.response.data?.message?.includes("Your Response is send before")
+    ) {
+    } else {
+      if (error.response.status === 401 && !x) {
+        x = true;
+        await store.dispatch("logout");
+      }
     }
+
     return error;
   }
 );

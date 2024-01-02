@@ -11,7 +11,7 @@
       </v-sheet>
       <h1 class="mt-10 text-center" v-motion-slide-right>
         <v-icon>mdi-calendar</v-icon>
-        شهر نوفمبر
+        محتوى {{ props.id }}
       </h1>
       <v-divider
         width="200"
@@ -20,38 +20,51 @@
         color="teal"
       ></v-divider>
       <div class="month-content">
-        <Content />
+        <Content :month="props.id" />
       </div>
     </v-container>
   </AppLayout>
 </template>
 
-<script>
+<script setup>
 import AppLayout from "@/components/website/AppLayout.vue";
 import Content from "@/components/website/Month/content/Content.vue";
-export default {
-  components: { AppLayout, Content },
-  data: () => ({
-    items: [
-      {
-        title: "الرئيسية",
-        disabled: false,
-        href: "/",
-      },
-      {
-        title: "الصفوف الدراسية",
-        disabled: false,
-        href: "/home",
-      },
-      {
-        title: "شهر نوفمبر",
-        disabled: true,
-        href: "/month/1",
-      },
-    ],
-    tab: "option-1",
-  }),
-};
+import { computed } from "vue";
+import { reactive } from "vue";
+import { onMounted } from "vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
+const props = defineProps({
+  id: String,
+});
+
+const items = ref([
+  {
+    title: "الرئيسية",
+    disabled: false,
+    href: "/",
+  },
+  {
+    title: "الصفوف الدراسية",
+    disabled: false,
+    href: "/home",
+  },
+  {
+    title: "محتوى الشهر الدراسي",
+    disabled: true,
+    href: "/month/" + props.id,
+  },
+]);
+
+const state = reactive({
+  student: computed(() => useStore().state.student),
+});
+
+onMounted(async () => {
+  if (!state.student) useRouter().push({ name: "login" });
+});
 </script>
 
 <style lang="scss" scoped>

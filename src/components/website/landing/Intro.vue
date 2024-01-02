@@ -38,7 +38,7 @@
           >
         </v-col>
         <v-col col="12" md="6" class="text-center">
-          <video height="360" controls v-motion-slide-left>
+          <video height="360" autoplay muted controls v-motion-slide-left>
             <source
               :src="require('../../../assets/video/intro.mp4')"
               type="video/mp4"

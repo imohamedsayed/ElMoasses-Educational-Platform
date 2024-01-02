@@ -30,7 +30,6 @@
                 </template>
                 <Semesters :id="year.id" />
               </v-list-group>
-              
             </v-list>
             <v-list v-else>
               <v-skeleton-loader :loading="loading" type="list-item-two-line">
@@ -134,7 +133,8 @@ export default {
       }
       loading.value = false;
     });
-    tab.value = state.semesters[0]?.id ||1;
+    tab.value = state.semesters[0]?.id || 1;
+
     return { years, loading, state, tab };
   },
 };

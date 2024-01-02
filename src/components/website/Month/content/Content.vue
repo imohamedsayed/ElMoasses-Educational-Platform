@@ -2,7 +2,7 @@
   <div class="content" dir="rtl">
     <v-tabs
       class="mb-15 tabs mt-5"
-      v-model="state.tab"
+      v-model="tab"
       color="white"
       style="background: var(--caribian-green)"
     >
@@ -25,34 +25,29 @@
         </template>
       </v-tab>
     </v-tabs>
-    <v-window v-model="state.tab" class="mt-16">
+    <v-window v-model="tab" class="mt-16">
       <v-window-item value="lec">
-        <LecturesList />
+        <LecturesList :month="props.month" />
       </v-window-item>
       <v-window-item value="notes">
-        <NotesList />
+        <NotesList :month="props.month" />
       </v-window-item>
       <v-window-item value="exams">
-        <p>exams</p>
+        <ExamsList :month="props.month" />
       </v-window-item>
     </v-window>
   </div>
 </template>
 
-<script>
-import { reactive } from "vue";
+<script setup>
+import { ref } from "vue";
 import NotesList from "./notes/NotesList.vue";
 import LecturesList from "./lectures/LecturesList.vue";
-export default {
-  components: { NotesList, LecturesList },
-  setup() {
-    const state = reactive({
-      tab: "lec",
-    });
-
-    return { state };
-  },
-};
+import ExamsList from "./exams/ExamsList.vue";
+const tab = ref("lec");
+const props = defineProps({
+  month: String,
+});
 </script>
 
 <style lang="scss" scoped></style>

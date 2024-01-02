@@ -2,14 +2,23 @@
   <v-alert
     class="lec-box mb-5"
     icon="mdi-video"
-    title="الوحدة الاولي"
+    :title="lecture.name"
     text="اضغط للاستماع الي المحاضرة"
+    @click="
+      $router.push({
+        name: 'lecture',
+        params: { mid: lecture.month_id, id: lecture.id },
+      })
+    "
   >
   </v-alert>
 </template>
 
 <script>
-export default {};
+export default {
+  props: ["lecture"],
+
+};
 </script>
 
 <style lang="scss">

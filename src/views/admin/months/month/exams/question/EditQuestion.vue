@@ -133,11 +133,11 @@ export default {
       admin: computed(() => store.state.admin),
       types: [
         {
-          value: 0,
+          value: 1,
           title: "الاختيار من متعدد",
         },
         {
-          value: 1,
+          value: 2,
           title: "صح او خطأ",
         },
       ],
