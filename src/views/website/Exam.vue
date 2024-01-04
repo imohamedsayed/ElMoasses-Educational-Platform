@@ -241,8 +241,6 @@ const submitExam = async () => {
     answers: answers,
   };
 
-  console.log(data);
-
   try {
     let res = await axios.post(
       "api/submit_exam/" + props.id + "/" + props.mid,

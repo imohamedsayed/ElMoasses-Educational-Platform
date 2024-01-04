@@ -2,6 +2,7 @@
   <div class="exam-results">
     <v-row v-if="!loading && exams.length">
       <v-col cols="12" class="mt-5" v-for="exam in exams" :key="exam.id">
+        <ExamCard :exam="exam" />
       </v-col>
     </v-row>
     <div v-if="loading">
@@ -12,7 +13,7 @@
         :key="i"
       ></v-skeleton-loader>
     </div>
-    <div v-else class="text-center pa-4">
+    <div v-else-if="!exams.length && !loading" class="text-center pa-4">
       <v-img
         :src="require('@/assets/images/noExams.svg')"
         width="400"
@@ -24,6 +25,7 @@
 </template>
 
 <script setup>
+import ExamCard from "./ExamCard.vue";
 import axios from "axios";
 import { onMounted, ref } from "vue";
 

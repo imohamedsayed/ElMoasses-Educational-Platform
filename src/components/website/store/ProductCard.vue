@@ -1,7 +1,7 @@
 <template>
   <v-card elevation="2">
     <v-img
-      :src="'http://localhost:8000/Product_Image/' + note.image"
+      :src="'http://localhost:8000/' + note.image"
       height="200"
     ></v-img>
     <v-card-title>{{ note.descrption }}</v-card-title>

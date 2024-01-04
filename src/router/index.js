@@ -53,7 +53,12 @@ import Products from "../views/admin/products/Products.vue";
 import EditProduct from "../views/admin/products/EditProduct.vue";
 import AddProduct from "../views/admin/products/AddProduct.vue";
 
+import Subscriptions from "../views/admin/subscription/Subscriptions.vue";
+import GrantSubscription from "../views/admin/subscription/GrantSubscription.vue";
+
 import PaymentSuccess from "../views/website/PaymentSuccess.vue";
+
+import Students from "../views/admin/students/Students.vue";
 
 import NotFound from "../views/NotFound.vue";
 
@@ -192,6 +197,14 @@ const routes = [
     component: DashHome,
     meta: {
       title: "وحدة التحكم",
+    },
+  },
+  {
+    path: "/dashboard/students",
+    name: "students",
+    component: Students,
+    meta: {
+      title: "الطلاب",
     },
   },
   {
@@ -442,6 +455,22 @@ const routes = [
     props: true,
     meta: {
       title: "تعديل المنتج",
+    },
+  },
+  {
+    path: "/dashboard/subscriptions",
+    name: "dashSubscriptions",
+    component: Subscriptions,
+    meta: {
+      title: "الاشتراكات",
+    },
+  },
+  {
+    path: "/dashboard/subscriptions/add",
+    name: "grantSubscription",
+    component: GrantSubscription,
+    meta: {
+      title: "منح اشتراك",
     },
   },
   {

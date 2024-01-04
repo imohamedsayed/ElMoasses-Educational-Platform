@@ -37,7 +37,7 @@ const notes = ref([]);
 const router = useRouter();
 onMounted(async () => {
   try {
-    const res = await axios.get("api/get-all-attachments/20");
+    const res = await axios.get("api/show-all-paid-note");
 
     if (res.status == 200) {
       notes.value = res.data.data;

@@ -20,9 +20,6 @@
 <script>
 export default {
   props: ["note"],
-  mounted() {
-    console.log(this.note);
-  },
 };
 </script>
 

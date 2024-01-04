@@ -3,26 +3,43 @@
     <v-container>
       <v-card class="mt-10 dash-card pa-4" :loading="state.loading">
         <h2>
-          <v-icon class="ml-2">mdi-plus-circle</v-icon>
-          اضافة سنة دراسية جديدة
+          <v-icon class="ml-2">mdi-account-cash</v-icon>
+          منح اشتراك للطلاب
         </h2>
         <v-divider class="mt-4 mb-15"></v-divider>
         <form class="pa-10" @submit.prevent="add">
           <v-row class="align-center">
             <v-col cols="12" md="6">
-              <v-text-field
-                class="bg-white"
-                label="السنة الدراسية"
+              <v-select
+                label="الطالب"
+                :items="state.students"
                 variant="outlined"
-                prepend-inner-icon="mdi-calendar"
-                color="teal-darken-1"
-                hint="مثال: الصف الأول الثانوي"
-                v-model="state.year"
+                item-value="id"
+                item-title="national_id_card"
+                prepend-inner-icon="mdi-account"
+                color="green"
+                v-model="state.studentId"
                 :error-messages="
-                  v$.year.$error ? v$.year.$errors[0].$message : ''
+                  v$.studentId.$error ? v$.studentId.$errors[0].$message : ''
                 "
               >
-              </v-text-field>
+              </v-select>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-select
+                label="الشهر"
+                :items="state.months"
+                item-value="id"
+                item-title="name"
+                variant="outlined"
+                prepend-inner-icon="mdi-calendar"
+                color="green"
+                v-model="state.monthId"
+                :error-messages="
+                  v$.monthId.$error ? v$.monthId.$errors[0].$message : ''
+                "
+              >
+              </v-select>
             </v-col>
             <v-col cols="12" md="6">
               <p class="text-weight-bold">الحالة:</p>
@@ -52,7 +69,7 @@
 
 <script>
 import DashLayout from "@/components/dashboard/layout/DashLayout.vue";
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
@@ -62,14 +79,33 @@ export default {
   components: { DashLayout },
   setup() {
     const state = reactive({
-      year: "",
+      studentId: "",
+      students: [],
+      months: [],
+      monthId: "",
       status: true,
       loading: false,
     });
 
+    onMounted(async () => {
+      state.loading = true;
+      try {
+        const monthRes = await axios.get("api_dashboard/months");
+        state.months = monthRes.data.data;
+        const studentRes = await axios.get(
+          "api_dashboard/get-select-info-of-student"
+        );
+        state.students = studentRes.data.data;
+      } catch (error) {
+        toast.error(error.message);
+      }
+      state.loading = false;
+    });
+
     const rules = computed(() => {
       return {
-        year: { required },
+        studentId: { required },
+        monthId: { required },
       };
     });
     const v$ = useVuelidate(rules, state);
@@ -79,12 +115,14 @@ export default {
       if (!v$.value.$error) {
         state.loading = true;
         try {
-          const res = await axios.post("api_dashboard/years", {
-            name: state.year,
+          let data = {
+            student_id: state.studentId,
+            month_id: state.monthId,
             status: Number(state.status).toString(),
-          });
-          if (res.status == 200) {
-            toast.success("تم اضافة السنة الدراسية بنجاح", {
+          };
+          const res = await axios.post("api_dashboard/subscriptions", data);
+          if (res.status == 201) {
+            toast.success("تم اضافة الاشتراك  ", {
               autoClose: 1500,
             });
           } else {
@@ -98,7 +136,7 @@ export default {
 
         state.loading = false;
       } else {
-        toast.error("ادخل الصف الدراسي", {
+        toast.error("ادخل البيانات كاملة و صحيحة", {
           autoClose: 1000,
         });
       }

@@ -31,6 +31,13 @@
         color="green-lighten-1"
         :to="{ name: 'dashHome' }"
       ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-account-multiple"
+        title="الطلاب"
+        value="students"
+        color="green-lighten-1"
+        :to="{ name: 'students' }"
+      ></v-list-item>
 
       <v-list-group>
         <template v-slot:activator="{ props }">
@@ -82,6 +89,33 @@
           title="اضافة منتج"
           value="add Product"
           :to="{ name: 'addProduct' }"
+          class="insider-list"
+        ></v-list-item>
+      </v-list-group>
+      <v-list-group>
+        <template v-slot:activator="{ props }">
+          <v-list-item
+            prepend-icon="mdi-cash"
+            title="الاشتراكات"
+            value="subscriptions"
+            v-bind="props"
+            link
+          ></v-list-item>
+        </template>
+
+        <v-list-item
+          prepend-icon="mdi-cash-multiple"
+          title="الاشتراكات"
+          value="all subscriptions"
+          :to="{ name: 'dashSubscriptions' }"
+          class="insider-list"
+        ></v-list-item>
+
+        <v-list-item
+          prepend-icon="mdi-account-cash"
+          title="منح اشتراك"
+          value="add subscription"
+          :to="{ name: 'grantSubscription' }"
           class="insider-list"
         ></v-list-item>
       </v-list-group>
