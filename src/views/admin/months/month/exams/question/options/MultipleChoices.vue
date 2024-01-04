@@ -202,16 +202,15 @@ export default {
               4: state.answer4,
             },
             is_correct: {
-              1: state.correct === 1,
-              2: state.correct === 2,
-              3: state.correct === 3,
-              4: state.correct === 4,
+              1: state.correct == 1,
+              2: state.correct == 2,
+              3: state.correct == 3,
+              4: state.correct == 4,
             },
           };
 
           state.disableAdd = true;
           const res = await axios.post("api_dashboard/options", data);
-
           if (res.status == 201) {
             toast.success("تم اضافة الاجابات بنجاح");
           } else {

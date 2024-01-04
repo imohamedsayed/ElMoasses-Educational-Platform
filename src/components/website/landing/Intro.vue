@@ -34,6 +34,7 @@
             size="x-large"
             class="start-btn"
             v-motion-roll-bottom
+            @click="$router.push({name:'signup'})"
             >ابدء التعلم الان</v-btn
           >
         </v-col>

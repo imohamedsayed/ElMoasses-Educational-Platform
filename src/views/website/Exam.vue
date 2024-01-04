@@ -234,28 +234,19 @@ const submitExam = async () => {
   let answers = {};
 
   myFormData.forEach((value, key) => {
-    if (key in answers) {
-      answers[key].push(value);
-    } else {
-      answers[key] = [];
-      answers[key].push(value);
-    }
+    answers[String(key)] = Number(value);
   });
+
   let data = {
     answers: answers,
   };
 
-  if (Object.keys(data.answers).length == 0) {
-    data.answers[state.questions[0].id] = ["1"];
-  }
-
-  let dataInJson = JSON.stringify(data);
-  let back = JSON.parse(dataInJson);
+  console.log(data);
 
   try {
     let res = await axios.post(
       "api/submit_exam/" + props.id + "/" + props.mid,
-      back,
+      data,
       {
         headers: {
           "Content-Type": "application/json",

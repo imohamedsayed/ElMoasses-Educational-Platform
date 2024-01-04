@@ -86,7 +86,7 @@ const items = ref([
     href: "/",
   },
   {
-    title: "الاشتراك",
+    title: "شراء المذكرات",
     disabled: true,
   },
 ]);
@@ -123,10 +123,10 @@ const gatherUserInfo = async () => {
       let data = {
         email: state.email,
         Number: state.phone,
-        month_id: props.id,
+        product_id: props.id,
       };
 
-      const res = await axios.post("api/pay", data);
+      const res = await axios.post("api/buy-note", data);
       if (res.status == 200) {
         paymentFrame.value = res.data.redirect_url;
         console.log(paymentFrame.value);

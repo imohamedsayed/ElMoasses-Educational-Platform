@@ -10,6 +10,7 @@ import Settings from "../views/website/Settings.vue";
 import Store from "../views/website/Store.vue";
 import ResetPassword from "../views/auth/ResetPassword.vue";
 import Subscribe from "../views/website/Subscribe.vue";
+import Buy from "../views/website/Buy.vue";
 import Exam from "../views/website/Exam.vue";
 // Dashboard Routes
 
@@ -51,6 +52,8 @@ import TF from "../views/admin/months/month/exams/question/options/TF.vue";
 import Products from "../views/admin/products/Products.vue";
 import EditProduct from "../views/admin/products/EditProduct.vue";
 import AddProduct from "../views/admin/products/AddProduct.vue";
+
+import PaymentSuccess from "../views/website/PaymentSuccess.vue";
 
 import NotFound from "../views/NotFound.vue";
 
@@ -147,12 +150,29 @@ const routes = [
     },
   },
   {
+    path: "/store/product/:id/buy",
+    name: "buy",
+    component: Buy,
+    props: true,
+    meta: {
+      title: "شراء المنتج",
+    },
+  },
+  {
     path: "/month/:mid/exam/:id",
     name: "exam",
     props: true,
     component: Exam,
     meta: {
       title: "الامتحان",
+    },
+  },
+  {
+    path: "/payment/success",
+    name: "paymentSuccess",
+    component: PaymentSuccess,
+    meta: {
+      title: "عملية شراء ناجحة",
     },
   },
   /*

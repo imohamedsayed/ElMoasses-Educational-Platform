@@ -9,9 +9,9 @@
           </template>
         </v-breadcrumbs>
       </v-sheet>
-      <h1 class="mt-10 text-center" v-motion-slide-right>
+      <h1 class="mt-10 text-center" v-motion-slide-right v-if="month">
         <v-icon>mdi-calendar</v-icon>
-        محتوى {{ props.id }}
+        محتوى {{ month.name || "الشهر الدراسي" }}
       </h1>
       <v-divider
         width="200"
@@ -29,6 +29,7 @@
 <script setup>
 import AppLayout from "@/components/website/AppLayout.vue";
 import Content from "@/components/website/Month/content/Content.vue";
+import axios from "axios";
 import { computed } from "vue";
 import { reactive } from "vue";
 import { onMounted } from "vue";
@@ -62,8 +63,15 @@ const state = reactive({
   student: computed(() => useStore().state.student),
 });
 
+const month = ref("");
+
 onMounted(async () => {
   if (!state.student) useRouter().push({ name: "login" });
+
+  try {
+    const res = await axios.get("api/get-month-byId/" + props.id);
+    if (res.status == 200) month.value = res.data.data;
+  } catch (error) {}
 });
 </script>
 

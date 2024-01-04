@@ -6,7 +6,7 @@
         md="4"
         lg="4"
         xl="3"
-        v-for="month in state.months"
+        v-for="(month, i) in state.months"
         :key="month.id"
         ><MonthCard
           :initial="{ opacity: 0, y: -200 }"

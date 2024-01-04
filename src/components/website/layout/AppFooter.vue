@@ -23,7 +23,8 @@
         <v-row>
           <v-col cols="12" md="6" v-motion-slide-right>
             <v-card elevation="0">
-              <v-img width="300" class="my-10" src="@/assets/images/logo.png"> </v-img>
+              <v-img width="300" class="my-10" src="@/assets/images/logo.png">
+              </v-img>
               <v-card-text class="text-start">
                 المؤسس للرياضيات مع مستر محمد سليمان نظام متابعه متكامل لشرح
                 وتبسيط ماده الرياضيات للمرحله الثانوية لا تيأس فالطريق طويل
@@ -45,11 +46,29 @@
           <v-col cols="12" md="6" class="text-start" v-motion-slide-left>
             <p class="mr-2 text-weight-bold text-h5">روابط هامة</p>
             <v-list>
-              <v-list-item title="المحاضرات" link prepend-icon="mdi-monitor">
+              <v-list-item
+                title="المحاضرات"
+                prepend-icon="mdi-monitor"
+                :to="{ name: 'home' }"
+                color="green"
+                class="text-black"
+              >
               </v-list-item>
-              <v-list-item title="تسجيل دخول" link prepend-icon="mdi-login">
+              <v-list-item
+                title="تسجيل دخول"
+                prepend-icon="mdi-login"
+                :to="{ name: 'login' }"
+                color="green"
+                class="text-black"
+              >
               </v-list-item>
-              <v-list-item title="انشاء حساب" link prepend-icon="mdi-account">
+              <v-list-item
+                title="انشاء حساب"
+                prepend-icon="mdi-account"
+                :to="{ name: 'signup' }"
+                color="green"
+                class="text-black"
+              >
               </v-list-item>
             </v-list>
             <v-divider class="mb-4" color="green" thickness="4"></v-divider>

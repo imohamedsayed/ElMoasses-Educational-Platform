@@ -158,14 +158,13 @@ export default {
               2: state.answer2,
             },
             is_correct: {
-              1: state.correct === 1,
-              2: state.correct === 2,
+              1: state.correct == 1,
+              2: state.correct == 2,
             },
           };
 
           state.disableAdd = true;
           const res = await axios.post("api_dashboard/options", data);
-
           if (res.status == 201) {
             toast.success("تم اضافة الاجابات بنجاح");
           } else {

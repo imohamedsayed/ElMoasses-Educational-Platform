@@ -50,6 +50,7 @@
                   <v-icon start> mdi-book-multiple-outline </v-icon>
                   اشتراكاتي
                 </v-tab>
+
                 <v-tab
                   value="option-2"
                   class="mb-4"
@@ -61,16 +62,32 @@
                   <v-icon start> mdi-pdf-box </v-icon>
                   مذكراتي
                 </v-tab>
+                <v-tab
+                  value="option-3"
+                  class="mb-4"
+                  style="
+                    border: 1px solid var(--caribian-green);
+                    border-radius: 10px;
+                  "
+                >
+                  <v-icon start> mdi-file-multiple-outline </v-icon>
+                  امتحاناتي
+                </v-tab>
               </v-tabs>
             </v-col>
             <v-col cols="12" md="10">
               <v-window v-model="state.tab">
                 <v-window-item value="courses">
-                  <div v-if="state.tab == 'courses'"><MonthList /></div>
+                  <div v-if="state.tab == 'courses'"><MonthsList /></div>
                 </v-window-item>
                 <v-window-item value="option-2">
                   <div v-if="state.tab == 'option-2'">
                     <NotesList />
+                  </div>
+                </v-window-item>
+                <v-window-item value="option-3">
+                  <div v-if="state.tab == 'option-3'">
+                    <ExamsList />
                   </div>
                 </v-window-item>
               </v-window>
@@ -84,13 +101,15 @@
 
 <script>
 import AppLayout from "@/components/website/AppLayout.vue";
-import MonthList from "@/components/website/Month/MonthsList.vue";
-import NotesList from "@/components/website/Month/content/notes/NotesList.vue";
+import MonthsList from "@/components/website/profile/months/MonthsList.vue";
+import NotesList from "@/components/website/profile/notes/NotesList.vue";
+import ExamsList from "@/components/website/profile/exams/ExamsList.vue";
 import { reactive, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+
 export default {
-  components: { AppLayout, MonthList, NotesList },
+  components: { AppLayout, MonthsList, NotesList, ExamsList },
   setup() {
     const store = useStore();
     const router = useRouter();

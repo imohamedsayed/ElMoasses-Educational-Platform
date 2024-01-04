@@ -16,8 +16,7 @@
             <v-icon class="ml-2">mdi-storefront-outline </v-icon>المتجر
           </h2>
 
-          <NotesList />
-          <NotesList />
+          <ProductsList />
         </v-card>
       </v-container>
     </div>
@@ -27,9 +26,9 @@
 <script>
 import AppLayout from "@/components/website/AppLayout.vue";
 import { reactive } from "vue";
-import NotesList from "@/components/website/Month/content/notes/NotesList.vue";
+import ProductsList from "@/components/website/store/ProductsList.vue";
 export default {
-  components: { AppLayout, NotesList },
+  components: { AppLayout, ProductsList },
   setup() {
     const state = reactive({
       items: [
