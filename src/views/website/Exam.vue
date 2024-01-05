@@ -167,13 +167,20 @@
 <script setup>
 import AppLayout from "@/components/website/AppLayout.vue";
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
+import { useStore } from "vuex";
+
 const props = defineProps({
   mid: String,
   id: String,
 });
+const state = reactive({
+  student: computed(() => useStore().state.student),
+  token: computed(() => useStore().state.token),
+});
+
 const items = ref([
   {
     title: "الرئيسية",
@@ -202,8 +209,11 @@ const submitting = ref(false);
 const examForm = ref(null);
 
 onMounted(async () => {
+  if (!state.student) useRouter().push({ name: "login" });
+
   try {
     const res = await axios.get(`api/view-exam/${props.id}/${props.mid}`);
+
     if (res.status == 200) {
       exam.value = res.data.data;
       questions.value = exam.value.questions;

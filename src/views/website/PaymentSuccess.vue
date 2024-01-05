@@ -14,14 +14,18 @@
   </AppLayout>
 </template>
 
-<script>
+<script setup>
 import AppLayout from "@/components/website/AppLayout.vue";
+import { reactive, onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
-export default {
-  components: {
-    AppLayout,
-  },
-};
+const state = reactive({
+  student: computed(() => useStore().state.student),
+});
+onMounted(() => {
+  if (!state.student) useRouter().push({ name: "login" });
+});
 </script>
 
 <style></style>

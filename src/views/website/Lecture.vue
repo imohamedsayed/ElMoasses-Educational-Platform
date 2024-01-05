@@ -31,7 +31,10 @@
         allowfullscreen
       ></iframe>
       <div v-else>
-        <v-alert type="warning" closable>المحاضرة التي طلبتها غير موجودة. من فضلك تحقق من الرابط الذي ادخلته</v-alert>
+        <v-alert type="warning" closable
+          >المحاضرة التي طلبتها غير موجودة. من فضلك تحقق من الرابط الذي
+          ادخلته</v-alert
+        >
       </div>
       <v-divider class="my-10"></v-divider>
       <v-list v-if="lectures.length">
@@ -58,9 +61,11 @@
 <script setup>
 import AppLayout from "@/components/website/AppLayout.vue";
 import axios from "axios";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
+import { useStore } from "vuex";
+
 const props = defineProps({
   mid: String,
   id: String,
@@ -70,14 +75,19 @@ const loading = ref(true);
 const lec = ref("");
 const lectures = ref([]);
 const router = useRouter();
+
+const state = reactive({
+  student: computed(() => useStore().state.student),
+});
+
 onMounted(async () => {
+  if (!state.student) router.push({ name: "login" });
+
   try {
     const res = await axios.get("api/get-all-active-contents/" + props.mid);
     if (res.status == 200) {
       lectures.value = res.data.data;
       lec.value = lectures.value.find((l) => l.id == props.id);
-
-   
     } else if (res.response.status == 401) {
       router.push({
         name: "monthSubscription",
