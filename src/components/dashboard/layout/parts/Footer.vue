@@ -23,11 +23,12 @@
         <v-row>
           <v-col cols="12" md="6" v-motion-slide-right>
             <v-card elevation="0">
-              <v-img  width="300" class="my-10" src="@/assets/images/logo.png"> </v-img>
+              <v-img width="300" class="my-10" src="@/assets/images/logo.png">
+              </v-img>
               <v-card-text class="text-start">
-                المؤسس للرياضيات مع مستر محمد سليمان نظام متابعه متكامل لشرح
-                وتبسيط ماده الرياضيات للمرحله الثانوية لا تيأس فالطريق طويل
-                والوصول اليه حلم جميل
+                المؤسس مع مستر محمد سليمان نظام متابعه متكامل لشرح وتبسيط المواد
+                الدراسية للمرحله الثانوية لا تيأس فالطريق طويل والوصول اليه حلم
+                جميل
               </v-card-text>
               <v-card-actions>
                 <v-btn icon color="green-lighten-1"

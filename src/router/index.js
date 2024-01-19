@@ -57,6 +57,7 @@ import Subscriptions from "../views/admin/subscription/Subscriptions.vue";
 import GrantSubscription from "../views/admin/subscription/GrantSubscription.vue";
 
 import PaymentSuccess from "../views/website/PaymentSuccess.vue";
+import PaymentFailed from "../views/website/PaymentFailed.vue";
 
 import Students from "../views/admin/students/Students.vue";
 
@@ -178,6 +179,14 @@ const routes = [
     component: PaymentSuccess,
     meta: {
       title: "عملية شراء ناجحة",
+    },
+  },
+  {
+    path: "/payment/failed",
+    name: "PaymentFailed",
+    component: PaymentFailed,
+    meta: {
+      title: "عملية شراء فاشلة",
     },
   },
   /*

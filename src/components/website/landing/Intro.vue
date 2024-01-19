@@ -4,10 +4,10 @@
       style="height: 100%"
       class="d-flex align-center justify-center"
     >
-      <v-row>
+      <v-row class="align-center">
         <v-col
-          col="12"
-          md="6"
+          cols="12"
+          sm="6"
           class="text-white text text-center text-md-start"
         >
           <h1
@@ -16,7 +16,7 @@
             :initial="{ opacity: 0, x: 200 }"
             :enter="{ opacity: 1, x: 0 }"
           >
-            المنصة العربية الافضل لتعلم الرياضيات باحتراف
+            المنصة العربية الافضل للتعلم عن بعد باحتراف
           </h1>
           <p
             class="mb-10"
@@ -25,7 +25,7 @@
             :enter="{ opacity: 1, y: 0 }"
             :delay="200"
           >
-            تعلم الرياضيات بمختلف الدروس من خلال محاضرات في المنصة, واحصل على
+            تعلم المناهج الدراسية بمختلف الدروس من خلال محاضرات في المنصة, واحصل على
             اعلى الدرجات.
           </p>
           <v-btn
@@ -34,17 +34,16 @@
             size="x-large"
             class="start-btn"
             v-motion-roll-bottom
-            @click="$router.push({name:'signup'})"
+            @click="$router.push({ name: 'signup' })"
             >ابدء التعلم الان</v-btn
           >
         </v-col>
-        <v-col col="12" md="6" class="text-center">
-          <video height="360" autoplay muted controls v-motion-slide-left>
-            <source
-              :src="require('../../../assets/video/intro.mp4')"
-              type="video/mp4"
-            />
-          </video>
+        <v-col cols="12" sm="6" class="text-center">
+          <v-img
+            :src="require('@/assets/images/intro.svg')"
+            width="cover"
+            class="mx-auto"
+          ></v-img>
         </v-col>
       </v-row>
     </v-container>

@@ -20,19 +20,6 @@
           <template v-slot:item.1>
             <form class="my-10" @submit.prevent="gatherUserInfo">
               <v-text-field
-                label="البريد الالكتروني"
-                prepend-inner-icon="mdi-email"
-                variant="outlined"
-                hint="user@example.com"
-                class="my-5"
-                v-model="state.email"
-                :error-messages="
-                  v$.email.$error ? v$.email.$errors[0].$message : ''
-                "
-                color="success"
-              >
-              </v-text-field>
-              <v-text-field
                 label="رقم الهاتف (محفطة كاش)"
                 prepend-inner-icon="mdi-phone"
                 variant="outlined"
@@ -99,13 +86,11 @@ const paymentFrame = ref("");
 
 const state = reactive({
   student: computed(() => store.state.student),
-  email: "",
   phone: "",
 });
 
 const rules = computed(() => {
   return {
-    email: { required, email },
     phone: { required, minLength: minLength(11) },
   };
 });
@@ -121,7 +106,6 @@ const gatherUserInfo = async () => {
     loading.value = true;
     try {
       let data = {
-        email: state.email,
         Number: state.phone,
         product_id: props.id,
       };
