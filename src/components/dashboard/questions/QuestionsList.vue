@@ -31,11 +31,7 @@
       >
         <template v-slot:item.image="{ item }">
           <v-card class="my-2" elevation="2" rounded>
-            <v-img
-              :src="`http://localhost:8000/${item.image}`"
-              height="64"
-              cover
-            ></v-img>
+            <v-img :src="apiUrl + item.image" height="64" cover></v-img>
           </v-card>
         </template>
         <template v-slot:item.options="{ item }">
@@ -145,6 +141,7 @@ export default {
   data: () => ({
     search: "",
     dialog: false,
+    apiUrl: process.env.VUE_APP_API_URL,
     id: "",
     headers: [
       {

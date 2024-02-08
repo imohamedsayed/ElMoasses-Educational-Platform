@@ -38,7 +38,7 @@
 
                 <div v-if="question.image">
                   <v-img
-                    :src="'http://127.0.0.1:8000/' + question.image"
+                    :src="apiUrl + question.image"
                     width="100%"
                     height="400px"
                     class="mx-auto"
@@ -81,7 +81,7 @@
 
                 <div v-if="question.image">
                   <v-img
-                    :src="'http://127.0.0.1:8000/' + question.image"
+                    :src="apiUrl + question.image"
                     width="100%"
                     height="400px"
                     class="mx-auto"
@@ -171,6 +171,7 @@ import { ref, onMounted, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
 import { useStore } from "vuex";
+const apiUrl = process.env.VUE_APP_API_URL;
 
 const props = defineProps({
   mid: String,

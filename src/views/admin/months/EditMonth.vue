@@ -68,7 +68,7 @@
                   ></v-img>
                   <v-img
                     v-else
-                    :src="'http://localhost:8000/' + state.storedImage"
+                    :src="appUrl + state.storedImage"
                     width="80"
                     height="53"
                   ></v-img>
@@ -105,6 +105,8 @@ export default {
   components: { DashLayout },
   props: ["id"],
   setup(props) {
+    const appUrl = process.env.VUE_APP_API_URL;
+
     const store = useStore();
     const router = useRouter();
     const state = reactive({
@@ -194,7 +196,7 @@ export default {
       }
     };
 
-    return { state, add, v$, getImageUrl };
+    return { state, add, v$, getImageUrl, appUrl };
   },
 };
 </script>

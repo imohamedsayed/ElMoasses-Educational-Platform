@@ -3,7 +3,7 @@
     <v-img
       class="align-end text-white"
       height="300"
-      :src="'http://localhost:8000/' + month.image"
+      :src="apiUrl + month.image"
       cover
     >
     </v-img>
@@ -32,6 +32,11 @@ import { onMounted } from "vue";
 
 export default {
   props: ["month"],
+  data() {
+    return {
+      apiUrl: process.env.VUE_APP_API_URL,
+    };
+  },
   setup(props) {
     onMounted(() => {});
   },

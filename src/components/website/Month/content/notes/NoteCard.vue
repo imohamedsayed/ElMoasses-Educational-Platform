@@ -7,7 +7,7 @@
     <span class="text-grey mr-4 mt-8 d-block">{{ note.created_at }}</span>
     <v-divider> </v-divider>
     <v-card-actions>
-      <a :href="'http://localhost:8000/' + note.name" download target="_blank">
+      <a :href="apiUrl + note.name" download target="_blank">
         <v-btn color="deep-orange-darken-1" variant="flat"
           ><v-icon>mdi-download</v-icon> تحميل</v-btn
         >
@@ -19,6 +19,11 @@
 <script>
 export default {
   props: ["note"],
+  data() {
+    return {
+      apiUrl: process.env.VUE_APP_API_URL,
+    };
+  },
   mounted() {
     console.log(this.note);
   },

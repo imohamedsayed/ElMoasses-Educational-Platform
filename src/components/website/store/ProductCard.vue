@@ -1,9 +1,6 @@
 <template>
   <v-card elevation="2">
-    <v-img
-      :src="'http://localhost:8000/' + note.image"
-      height="200"
-    ></v-img>
+    <v-img :src="apiUrl + note.image" height="200"></v-img>
     <v-card-title>{{ note.descrption }}</v-card-title>
     <v-card-subtitle>{{ note.year.name }} </v-card-subtitle>
 
@@ -25,6 +22,11 @@
 <script>
 export default {
   props: ["note"],
+  data() {
+    return {
+      apiUrl: process.env.VUE_APP_API_URL,
+    };
+  },
   mounted() {},
 };
 </script>
