@@ -38,6 +38,13 @@
         color="green-lighten-1"
         :to="{ name: 'students' }"
       ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-security"
+        title="الأدمن"
+        value="students"
+        color="green-lighten-1"
+        :to="{ name: 'admins' }"
+      ></v-list-item>
 
       <v-list-group>
         <template v-slot:activator="{ props }">

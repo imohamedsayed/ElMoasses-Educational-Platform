@@ -12,6 +12,7 @@ import ResetPassword from "../views/auth/ResetPassword.vue";
 import Subscribe from "../views/website/Subscribe.vue";
 import Buy from "../views/website/Buy.vue";
 import Exam from "../views/website/Exam.vue";
+import ExamResult from "../views/website/ExamResult.vue";
 // Dashboard Routes
 
 import AdminLogin from "../views/auth/AdminLogin.vue";
@@ -60,6 +61,9 @@ import PaymentSuccess from "../views/website/PaymentSuccess.vue";
 import PaymentFailed from "../views/website/PaymentFailed.vue";
 
 import Students from "../views/admin/students/Students.vue";
+
+import Admins from "../views/admin/admins/Admins.vue";
+import AddAdmin from "../views/admin/admins/AddAdmin.vue";
 
 import NotFound from "../views/NotFound.vue";
 
@@ -171,6 +175,15 @@ const routes = [
     component: Exam,
     meta: {
       title: "الامتحان",
+    },
+  },
+  {
+    path: "/month/:mid/exam/:id/result",
+    name: "examResult",
+    props: true,
+    component: ExamResult,
+    meta: {
+      title: "نتيجة الامتحان",
     },
   },
   {
@@ -480,6 +493,22 @@ const routes = [
     component: GrantSubscription,
     meta: {
       title: "منح اشتراك",
+    },
+  },
+  {
+    path: "/dashboard/admins",
+    name: "admins",
+    component: Admins,
+    meta: {
+      title: "الادمن",
+    },
+  },
+  {
+    path: "/dashboard/admins/add",
+    name: "addAdmin",
+    component: AddAdmin,
+    meta: {
+      title: "اضافة ادمن جديد",
     },
   },
   {

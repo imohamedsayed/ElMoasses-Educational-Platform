@@ -2,7 +2,7 @@
   <AppLayout>
     <v-container>
       <v-sheet class="lectures-title" width="100%" height="20vh">
-        <h1 v-motion-slide-top>المؤسس للرياضيات</h1>
+        <h1 v-motion-slide-top>المؤسس </h1>
         <v-breadcrumbs :items="items" class="mx-auto" v-motion-slide-bottom>
           <template v-slot:title="{ item }">
             {{ item.title.toUpperCase() }}

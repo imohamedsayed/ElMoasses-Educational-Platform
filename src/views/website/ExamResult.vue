@@ -60,8 +60,31 @@
                     style="width: 25px; height: 25px"
                     :name="question.id"
                     :value="option.id"
+                    disabled
+                    :checked="my_options.includes(option.id) ? true : false"
                   />
                   {{ option.option }}
+                  <span
+                    class="true_answer text-success"
+                    v-if="my_options.includes(option.id) && option.is_correct"
+                  >
+                    اجابتك صحيحة
+                  </span>
+                  <span
+                    class="false_answer text-error"
+                    color="error"
+                    v-else-if="
+                      my_options.includes(option.id) && !option.is_correct
+                    "
+                    >اجابتك خاطئة</span
+                  >
+                  <span
+                    class="true_answer text-success"
+                    v-else-if="
+                      !my_options.includes(option.id) && option.is_correct
+                    "
+                    >الاجابة الصحيحة
+                  </span>
                 </div>
               </div>
 
@@ -103,26 +126,34 @@
                     class="ms-2"
                     :name="question.id"
                     :value="option.id"
+                    :checked="my_options.includes(option.id) ? true : false"
+                    disabled
                   />
                   <span>{{ option.option }}</span>
+                  <span
+                    class="true_answer text-success"
+                    v-if="my_options.includes(option.id) && option.is_correct"
+                  >
+                    اجابتك صحيحة
+                  </span>
+                  <span
+                    class="false_answer text-error"
+                    color="error"
+                    v-else-if="
+                      my_options.includes(option.id) && !option.is_correct
+                    "
+                    >اجابتك خاطئة</span
+                  >
+                  <span
+                    class="true_answer text-success"
+                    v-else-if="
+                      !my_options.includes(option.id) && option.is_correct
+                    "
+                    >الاجابة الصحيحة
+                  </span>
                 </div>
               </div>
             </v-card>
-
-            <v-alert type="warning" closable
-              >من فضلك لاحظ ان عدم اختيارك لاجابة معينة سوف يكلفك درجة
-              السؤال</v-alert
-            >
-
-            <v-btn
-              color="blue"
-              block
-              size="large"
-              class="mt-13"
-              :loading="submitting"
-              type="submit"
-              >ارسال</v-btn
-            >
           </form>
         </v-container>
       </v-card>
@@ -138,27 +169,13 @@
           </v-skeleton-loader>
         </v-container>
       </v-card>
-      <v-card
-        v-if="!loading && !exam && !alreadyExistedBefore"
-        class="my-10 text-center py-13"
-      >
+      <v-card v-if="!loading && !exam" class="my-10 text-center py-13">
         <v-img
           :src="require('@/assets/images/notAllowed.svg')"
           width="600"
           class="mx-auto mb-5"
         ></v-img>
-        <h2>غير مسموح لك بالوصول لمحتوي هذه الصفحة الان</h2>
-      </v-card>
-      <v-card
-        v-if="!loading && alreadyExistedBefore"
-        class="my-10 text-center py-13"
-      >
-        <v-img
-          :src="require('@/assets/images/alreadySend.svg')"
-          width="600"
-          class="mx-auto mb-5"
-        ></v-img>
-        <h2>لقد تم ارسال اجاباتك لهذا الامتحان من قبل</h2>
+        <h2>غير مسموح لك بالوصول لمحتوي هذه الصفحة</h2>
       </v-card>
     </v-container>
   </AppLayout>
@@ -201,25 +218,42 @@ const items = ref([
 ]);
 const loading = ref(true);
 const exam = ref(null);
+const exam_result = ref("");
+const Choices = ref([]);
+const my_options = ref([]);
 const router = useRouter();
 const questions = ref([]);
 
 const alreadyExistedBefore = ref(false);
-const submitting = ref(false);
-
 const examForm = ref(null);
 
 onMounted(async () => {
   if (!state.student) useRouter().push({ name: "login" });
 
   try {
-    const res = await axios.get(`api/view-exam/${props.id}/${props.mid}`);
+    const res = await axios.get(`api/show-answer/${props.id}/${props.mid}`);
 
     if (res.status == 200) {
-      exam.value = res.data.data;
-      questions.value = exam.value.questions;
+      exam.value = res.data.data.preview.exam;
+      questions.value = res.data.data.preview.questions;
+      Choices.value = res.data.data.preview.Choices;
+      // get my options
+      questions.value.forEach((question) => {
+        Choices.value.forEach((choice) => {
+          if (question.id === choice.question_id) {
+            question.options.forEach((option) => {
+              if (option.id === choice.studnet_choice) {
+                my_options.value.push(option.id);
+              }
+            });
+          }
+        });
+      });
     } else if (res.response.status == 401) {
-      if (res.response.data.message.includes("Your Response is send before")) {
+      if (
+        res.response.data.message.includes("Your Response is send before") ||
+        res.response.data.message.includes("exam")
+      ) {
         alreadyExistedBefore.value = true;
       } else if (!res.response.data.message.includes("exam will")) {
         router.push({
@@ -236,51 +270,6 @@ onMounted(async () => {
 
   loading.value = false;
 });
-
-const submitExam = async () => {
-  submitting.value = true;
-  const myFormData = new FormData(examForm.value);
-  const formDataObj = {};
-
-  let answers = {};
-
-  myFormData.forEach((value, key) => {
-    answers[String(key)] = Number(value);
-  });
-
-  let data = {
-    answers: answers,
-  };
-
-  try {
-    let res = await axios.post(
-      "api/submit_exam/" + props.id + "/" + props.mid,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (res.status == 200) {
-      toast.success("تم ارسال اجاباتك بنجاح", {
-        autoClose: 3000,
-      });
-      setTimeout(() => {
-        location.reload();
-      }, 3000);
-    } else {
-      toast.error(
-        res.response?.data?.message || "حدث خطأ ما, عاود المحاولة في وقت اخر"
-      );
-    }
-  } catch (err) {
-    toast.error(err.response.data.message);
-  }
-
-  submitting.value = false;
-};
 </script>
 
 <style></style>

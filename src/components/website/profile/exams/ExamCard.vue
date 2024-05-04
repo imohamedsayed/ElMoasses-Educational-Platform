@@ -1,5 +1,13 @@
 <template>
-  <v-card class="pa-5 bg-grey-lighten-4 border-md">
+  <v-card
+    class="pa-5 bg-grey-lighten-4 border-md"
+    @click="
+      $router.push({
+        name: 'examResult',
+        params: { id: exam.id, mid: exam.MonthId },
+      })
+    "
+  >
     <v-card-darken>
       <v-icon>mdi-file-outline</v-icon>
       {{ exam.name }} - {{ exam.MonthName }}</v-card-darken
@@ -23,6 +31,9 @@
 <script>
 export default {
   props: ["exam"],
+  mounted() {
+    console.log(this.exam);
+  },
 };
 </script>
 

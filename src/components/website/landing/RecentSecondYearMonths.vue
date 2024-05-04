@@ -1,5 +1,5 @@
 <template>
-  <section class="first-year">
+  <section class="first-year" v-if="months.length">
     <v-img :src="require('@/assets/images/3.svg')" alt="" class="img"></v-img>
 
     <v-container>

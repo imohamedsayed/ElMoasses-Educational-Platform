@@ -4,7 +4,7 @@
       <v-container>
         <v-card>
           <v-sheet class="lectures-title" width="100%" height="20vh">
-            <h1>المؤسس للرياضيات</h1>
+            <h1>المؤسس </h1>
             <v-breadcrumbs :items="state.items" class="mx-auto">
               <template v-slot:title="{ item }">
                 {{ item.title.toUpperCase() }}
