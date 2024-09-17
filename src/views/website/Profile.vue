@@ -6,7 +6,7 @@
           <div class="img">
             <v-img
               :src="require('../../assets/images/user.jpg')"
-              max-width="400"
+              max-width="200"
               class="mx-auto"
               style="border-radius: 50%"
             ></v-img>
@@ -34,7 +34,7 @@
             state.student.phone_name
           }}</v-card-subtitle>
 
-          <v-divider class="my-15"></v-divider>
+          <v-divider class=""></v-divider>
 
           <v-row class="user-content pa-3">
             <v-col col="12" md="2">
@@ -146,6 +146,6 @@ export default {
   }
 }
 .user-content {
-  margin-top: 100px;
+  margin-top: 50px;
 }
 </style>
