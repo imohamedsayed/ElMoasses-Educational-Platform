@@ -63,7 +63,7 @@
               >
                 <template v-slot:prepend>
                   <v-img
-                    v-if="state.image.length"
+                    v-if="state.image"
                     :src="getImageUrl()"
                     width="80"
                     height="53"
@@ -136,7 +136,7 @@ export default {
           const data = {
             name: state.name,
             price: state.price,
-            image: state.image[0],
+            image: state.image,
             semester_id: props.sid,
             status: Number(state.status).toString(),
           };
@@ -146,7 +146,7 @@ export default {
               "Content-Type": "multipart/form-data",
             },
           });
-          
+
           if (res.status == 200) {
             toast.success("تم اضافة الشهر بنجاح");
           } else {
@@ -167,8 +167,8 @@ export default {
     };
 
     const getImageUrl = () => {
-      if (state.image.length) {
-        return window.URL.createObjectURL(state.image[0]);
+      if (state.image) {
+        return window.URL.createObjectURL(state.image);
       } else {
         return "";
       }

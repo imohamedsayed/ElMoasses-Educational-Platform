@@ -99,7 +99,7 @@ export default {
         state.loading = true;
         try {
           const data = {
-            name: state.file[0],
+            name: state.file,
             descrption: state.description,
             month_id: props.mid,
           };

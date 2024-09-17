@@ -60,8 +60,8 @@
     >
       تسجيل خروج
     </v-btn>
-    <v-btn icon id="barMenu" class="d-block d-md-none"
-      ><v-icon>mdi-dots-vertical</v-icon>
+    <v-btn icon id="barMenu" class="d-block d-md-none text-black"
+      ><v-icon color="black">mdi-dots-vertical</v-icon>
     </v-btn>
 
     <v-menu activator="#barMenu" offset="10" class="pa-4">

@@ -61,7 +61,7 @@
               >
                 <template v-slot:prepend>
                   <v-img
-                    v-if="state.image.length"
+                    v-if="state.image"
                     :src="getImageUrl()"
                     width="80"
                     height="53"
@@ -154,7 +154,7 @@ export default {
           const data = {
             name: state.name,
             price: state.price,
-            image: state.image[0] || null,
+            image: state.image || null,
             status: Number(state.status).toString(),
           };
           console.log(props.id);
@@ -189,8 +189,8 @@ export default {
     };
 
     const getImageUrl = () => {
-      if (state.image.length) {
-        return window.URL.createObjectURL(state.image[0]);
+      if (state.image) {
+        return window.URL.createObjectURL(state.image);
       } else {
         return "";
       }

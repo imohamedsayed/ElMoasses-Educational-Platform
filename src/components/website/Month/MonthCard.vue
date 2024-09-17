@@ -10,12 +10,12 @@
 
     <v-card-subtitle class="pt-4">{{ month.created_at }}</v-card-subtitle>
 
-    <v-card-title>
-      <div style="font-size: 1.1rem; font-weight: bold">
-        {{ month.name }} - {{ month.semester_name }}
-      </div>
-      <v-chip class="mt-7" color="green"> {{ month.price }} جنيه </v-chip>
+    <v-card-title  style="font-size: 1.1rem; font-weight: bold mb-0">
+        {{ month.name }}
     </v-card-title>
+    <v-card-subtitle class="font-weight-bold">{{ month.semester_name }}</v-card-subtitle>
+
+    <v-chip class="mt-7" color="green"> {{ month.price }} جنيه </v-chip>
 
     <v-card-actions>
       <v-btn

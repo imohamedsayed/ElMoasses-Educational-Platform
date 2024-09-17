@@ -50,7 +50,6 @@
           class="pa-4 mb-5"
           prepend-icon="mdi-video"
           :to="{ name: 'lecture', params: { mid: lec.month_id, id: lec.id } }"
-          @click="location.reload()"
         >
         </v-list-item>
       </v-list>
@@ -61,7 +60,7 @@
 <script setup>
 import AppLayout from "@/components/website/AppLayout.vue";
 import axios from "axios";
-import { onMounted, ref, reactive, computed } from "vue";
+import { onMounted, ref, reactive, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
 import { useStore } from "vuex";
@@ -70,6 +69,14 @@ const props = defineProps({
   mid: String,
   id: String,
 });
+watch(
+    props,
+   async (value) => {
+        window.scrollTo(0, 0);
+       await loadLecture()
+    },
+    { deep: true }
+);
 
 const loading = ref(true);
 const lec = ref("");
@@ -82,8 +89,13 @@ const state = reactive({
 
 onMounted(async () => {
   if (!state.student) router.push({ name: "login" });
+    await loadLecture()
 
-  try {
+});
+
+const loadLecture = async()=>{
+    loading.value = true
+    try {
     const res = await axios.get("api/get-all-active-contents/" + props.mid);
     if (res.status == 200) {
       lectures.value = res.data.data;
@@ -102,7 +114,8 @@ onMounted(async () => {
   }
 
   loading.value = false;
-});
+}
+
 </script>
 
 <style></style>
